@@ -22,7 +22,10 @@ type TopicModel struct {
 }
 
 func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
-	const query = "SELECT * FROM topics"
+	const query = `
+		SELECT id, user_id, topic_name, topic_description, created_at 
+		FROM topics
+	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
@@ -52,7 +55,11 @@ func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
 		return nil, fmt.Errorf("invalid topic id")
 	}
 
-	const query = "SELECT * FROM topics WHERE id = $1"
+	const query = `
+		SELECT id, user_id, topic_name, topic_description, created_at 
+		FROM topics 
+		WHERE id = $1
+	`
 
 	var t Topic
 	err = m.DB.QueryRowContext(ctx, query, id).
@@ -70,7 +77,16 @@ func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
 }
 
 func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, error) {
-	const query = "SELECT * FROM topics WHERE user_id = $1"
+	_, err := uuid.Parse(userID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user id")
+	}
+
+	const query = `
+		SELECT id, user_id, topic_name, topic_description, created_at 
+		FROM topics 
+		WHERE user_id = $1
+	`
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
 	if err != nil {
@@ -100,6 +116,7 @@ func (m *TopicModel) Create(ctx context.Context, userID, topicName, topicDescrip
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, user_id, topic_name, topic_description, created_at
 	`
+
 	id := uuid.New().String()
 	createdAt := time.Now()
 

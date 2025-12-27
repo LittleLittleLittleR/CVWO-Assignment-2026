@@ -20,7 +20,10 @@ type UserModel struct {
 }
 
 func (m *UserModel) GetAll(ctx context.Context) ([]User, error) {
-	const query = "SELECT * FROM users"
+	const query = `
+		SELECT id, username, is_active 
+		FROM users
+	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
@@ -50,7 +53,11 @@ func (m *UserModel) GetByID(ctx context.Context, id string) (*User, error) {
 		return nil, fmt.Errorf("invalid user id")
 	}
 
-	const query = "SELECT * FROM users WHERE id = $1"
+	const query = `
+		SELECT id, username, is_active 
+		FROM users 
+		WHERE id = $1
+	`
 
 	var u User
 	err = m.DB.QueryRowContext(ctx, query, id).
@@ -68,7 +75,11 @@ func (m *UserModel) GetByID(ctx context.Context, id string) (*User, error) {
 }
 
 func (m *UserModel) GetByUsername(ctx context.Context, username string) (*User, error) {
-	const query = "SELECT * FROM users WHERE username = $1"
+	const query = `
+		SELECT id, username, is_active 
+		FROM users 
+		WHERE username = $1
+	`
 
 	var u User
 	err := m.DB.QueryRowContext(ctx, query, username).
@@ -85,8 +96,12 @@ func (m *UserModel) GetByUsername(ctx context.Context, username string) (*User, 
 }
 
 func (m *UserModel) Create(ctx context.Context, username string) (*User, error) {
-	const query = `INSERT INTO users (id, username, is_active)
-	VALUES ($1, $2, $3) RETURNING id, username, is_active`
+	const query = `
+		INSERT INTO users (id, username, is_active)
+		VALUES ($1, $2, $3) 
+		RETURNING id, username, is_active
+	`
+
 	id := uuid.New().String()
 	isActive := true
 
@@ -105,8 +120,13 @@ func (m *UserModel) Create(ctx context.Context, username string) (*User, error) 
 }
 
 func (m *UserModel) Update(ctx context.Context, id string, username string, isActive bool) (*User, error) {
-	const query = `UPDATE users SET username = $1, is_active = $2
-	WHERE id = $3 RETURNING id, username, is_active`
+	const query = `
+		UPDATE users 
+		SET username = $1, is_active = $2
+		WHERE id = $3 
+		RETURNING id, username, is_active
+	`
+
 	var u User
 	err := m.DB.QueryRowContext(ctx, query, username, isActive, id).
 		Scan(&u.ID, &u.Username, &u.IsActive)
