@@ -10,12 +10,12 @@ import (
 )
 
 type Post struct {
-	ID              string
-	UserID					string
-	TopicID         string
-	Title    				string
-	Body						string
-	CreatedAt       time.Time
+	ID string
+	UserID string
+	TopicID string
+	Title string
+	Body string
+	CreatedAt time.Time
 }
 
 type PostModel struct {
