@@ -10,11 +10,11 @@ import (
 )
 
 type Topic struct {
-	ID               string
-	UserID           string
-	TopicName        string
+	ID string
+	UserID string
+	TopicName string
 	TopicDescription string
-	CreatedAt        time.Time
+	CreatedAt time.Time
 }
 
 type TopicModel struct {

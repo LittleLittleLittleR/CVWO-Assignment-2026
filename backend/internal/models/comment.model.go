@@ -10,12 +10,12 @@ import (
 )
 
 type Comment struct {
-	ID         			string
-	UserID					string
-	PostID					string
+	ID string
+	UserID string
+	PostID string
 	ParentCommentID *string
-	Body						string
-	CreatedAt     	time.Time
+	Body string
+	CreatedAt time.Time
 }
 
 type CommentModel struct {
