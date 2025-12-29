@@ -29,7 +29,7 @@ func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get all topics: %w", err)
 	}
 	defer rows.Close()
 
@@ -38,12 +38,9 @@ func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
 	for rows.Next() {
 		var t Topic
 		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get all topics: %w", err)
 		}
 		topics = append(topics, t)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return topics, nil
@@ -52,7 +49,7 @@ func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
 func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid topic id")
+		return nil, ErrInvalidTopicID
 	}
 
 	const query = `
@@ -67,10 +64,10 @@ func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
 
 	if err != nil {
 		// No rows found with the given id
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrTopicNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("get topic by id: %w", err)
 	}
 
 	return &t, nil
@@ -79,7 +76,7 @@ func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
 func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, error) {
 	_, err := uuid.Parse(userID)
 	if err != nil {
-		return nil, fmt.Errorf("invalid user id")
+		return nil, ErrInvalidUserID
 	}
 
 	const query = `
@@ -90,7 +87,10 @@ func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, e
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrTopicNotFound
+		}
+		return nil, fmt.Errorf("get topics by user id: %w", err)
 	}
 	defer rows.Close()
 
@@ -99,12 +99,38 @@ func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, e
 	for rows.Next() {
 		var t Topic
 		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get topics by user id: %w", err)
 		}
 		topics = append(topics, t)
 	}
-	if err := rows.Err(); err != nil {
-		return nil, err
+
+	return topics, nil
+}
+
+func (m *TopicModel) GetByTopicName(ctx context.Context, topicName string) ([]Topic, error) {
+	const query = `
+		SELECT id, user_id, topic_name, topic_description, created_at 
+		FROM topics 
+		WHERE topic_name = $1
+	`
+
+	rows, err := m.DB.QueryContext(ctx, query, topicName)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrTopicNotFound
+		}
+		return nil, fmt.Errorf("get topics by topic name: %w", err)
+	}
+	defer rows.Close()
+
+	topics := []Topic{}
+
+	for rows.Next() {
+		var t Topic
+		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
+			return nil, fmt.Errorf("get topics by topic name: %w", err)
+		}
+		topics = append(topics, t)
 	}
 
 	return topics, nil
@@ -124,7 +150,7 @@ func (m *TopicModel) Create(ctx context.Context, userID, topicName, topicDescrip
 	err := m.DB.QueryRowContext(ctx, query, id, userID, topicName, topicDescription, createdAt).
 		Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create topic: %w", err)
 	}
 	return &t, nil
 }

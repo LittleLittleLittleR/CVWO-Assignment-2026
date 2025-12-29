@@ -27,7 +27,7 @@ func (m *UserModel) GetAll(ctx context.Context) ([]User, error) {
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get all users: %w", err)
 	}
 	defer rows.Close()
 
@@ -35,13 +35,11 @@ func (m *UserModel) GetAll(ctx context.Context) ([]User, error) {
 
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.ID, &u.Username, &u.IsActive); err != nil {
-			return nil, err
+		err := rows.Scan(&u.ID, &u.Username, &u.IsActive)
+		if err != nil {
+			return nil, fmt.Errorf("get all users: %w", err)
 		}
 		users = append(users, u)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return users, nil
@@ -50,7 +48,7 @@ func (m *UserModel) GetAll(ctx context.Context) ([]User, error) {
 func (m *UserModel) GetByID(ctx context.Context, id string) (*User, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid user id")
+		return nil, ErrInvalidUserID
 	}
 
 	const query = `
@@ -65,10 +63,10 @@ func (m *UserModel) GetByID(ctx context.Context, id string) (*User, error) {
 
 	if err != nil {
 		// No rows found with the given id
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
 	return &u, nil
@@ -86,10 +84,10 @@ func (m *UserModel) GetByUsername(ctx context.Context, username string) (*User, 
 		Scan(&u.ID, &u.Username, &u.IsActive)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+				return nil, ErrUserNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("get user by username: %w", err)
 	}
 
 	return &u, nil
@@ -111,10 +109,12 @@ func (m *UserModel) Create(ctx context.Context, username string) (*User, error) 
 	if err != nil {
 		// Handle unique constraint violation for username
 		var pgErr *pq.Error
-    if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-        return nil, fmt.Errorf("username already exists")
+    if errors.As(err, &pgErr) && 
+		pgErr.Code == "23505" &&
+		pgErr.Constraint == "users_username_key" {
+        return nil, ErrUsernameExists
     }
-		return nil, err
+		return nil, fmt.Errorf("create user: %w", err)
 	}
 	return &u, nil
 }
@@ -131,14 +131,16 @@ func (m *UserModel) Update(ctx context.Context, id string, username string, isAc
 	err := m.DB.QueryRowContext(ctx, query, username, isActive, id).
 		Scan(&u.ID, &u.Username, &u.IsActive)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
 		}
 		var pgErr *pq.Error
-		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-			return nil, fmt.Errorf("username already exists")
+		if errors.As(err, &pgErr) && 
+		pgErr.Code == "23505" &&
+		pgErr.Constraint == "users_username_key" {
+			return nil, ErrUsernameExists
 		}
-		return nil, err
+		return nil, fmt.Errorf("update user: %w", err)
 	}
 	return &u, nil
 }
