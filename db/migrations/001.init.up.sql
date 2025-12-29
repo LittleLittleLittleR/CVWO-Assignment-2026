@@ -10,7 +10,7 @@ CREATE TABLE users (
 CREATE TABLE topics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
-    topic_name TEXT UNIQUE NOT NULL,
+    topic_name TEXT NOT NULL,
     topic_description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT fk_topics_user
