@@ -30,7 +30,7 @@ func (m *CommentModel) GetAll(ctx context.Context) ([]Comment, error) {
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get all comments: %w", err)
 	}
 	defer rows.Close()
 
@@ -39,12 +39,9 @@ func (m *CommentModel) GetAll(ctx context.Context) ([]Comment, error) {
 	for rows.Next() {
 		var t Comment
 		if err := rows.Scan(&t.ID, &t.UserID, &t.PostID, &t.ParentCommentID, &t.Body, &t.CreatedAt); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get all comments: %w", err)
 		}
 		comments = append(comments, t)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return comments, nil
@@ -53,7 +50,7 @@ func (m *CommentModel) GetAll(ctx context.Context) ([]Comment, error) {
 func (m *CommentModel) GetByID(ctx context.Context, id string) (*Comment, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid comment id")
+		return nil, ErrInvalidCommentID
 	}
 
 	const query = `
@@ -67,10 +64,10 @@ func (m *CommentModel) GetByID(ctx context.Context, id string) (*Comment, error)
 		Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrCommentNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("get comment by id: %w", err)
 	}
 
 	return &c, nil
@@ -79,7 +76,7 @@ func (m *CommentModel) GetByID(ctx context.Context, id string) (*Comment, error)
 func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Comment, error) {
 	_, err := uuid.Parse(userID)
 	if err != nil {
-		return nil, fmt.Errorf("invalid user id")
+		return nil, ErrInvalidUserID
 	}
 	
 	const query = `
@@ -90,7 +87,10 @@ func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Commen
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrCommentNotFound
+		}
+		return nil, fmt.Errorf("get comments by user id: %w", err)
 	}
 	defer rows.Close()
 
@@ -99,12 +99,9 @@ func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Commen
 	for rows.Next() {
 		var c Comment
 		if err := rows.Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get comments by user id: %w", err)
 		}
 		comments = append(comments, c)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return comments, nil
@@ -113,7 +110,7 @@ func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Commen
 func (m *CommentModel) GetByPostID(ctx context.Context, postID string) ([]Comment, error) {
 	_, err := uuid.Parse(postID)
 	if err != nil {
-		return nil, fmt.Errorf("invalid post id")
+		return nil, ErrInvalidPostID
 	}
 	const query = `
 		SELECT id, user_id, post_id, parent_comment_id, body, created_at 
@@ -123,7 +120,10 @@ func (m *CommentModel) GetByPostID(ctx context.Context, postID string) ([]Commen
 
 	rows, err := m.DB.QueryContext(ctx, query, postID)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrCommentNotFound
+		}
+		return nil, fmt.Errorf("get comments by post id: %w", err)
 	}
 	defer rows.Close()
 
@@ -132,20 +132,19 @@ func (m *CommentModel) GetByPostID(ctx context.Context, postID string) ([]Commen
 	for rows.Next() {
 		var c Comment
 		if err := rows.Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get comments by post id: %w", err)
 		}
 		comments = append(comments, c)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return comments, nil
 }
 
-func (m *CommentModel) 
-Create(ctx context.Context, userID, postID string, parentCommentID *string, body string) 
-(*Comment, error) {
+func (m *CommentModel) Create(
+	ctx context.Context, 
+	userID, postID string, 
+	parentCommentID *string, 
+	body string) (*Comment, error) {
 	const query = `
 		INSERT INTO comments (id, user_id, post_id, parent_comment_id, body, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
@@ -158,7 +157,7 @@ Create(ctx context.Context, userID, postID string, parentCommentID *string, body
 	err := m.DB.QueryRowContext(ctx, query, id, userID, postID, parentCommentID, body, createdAt).
 		Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create comment: %w", err)
 	}
 	return &c, nil
 }
@@ -166,7 +165,7 @@ Create(ctx context.Context, userID, postID string, parentCommentID *string, body
 func (m *CommentModel) Update(ctx context.Context, id, body string) (*Comment, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid comment id")
+		return nil, ErrInvalidCommentID
 	}
 
 	const query = `
@@ -179,17 +178,17 @@ func (m *CommentModel) Update(ctx context.Context, id, body string) (*Comment, e
 	err = m.DB.QueryRowContext(ctx, query, body, id).
 		Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrCommentNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("update comment: %w", err)
 	}
 	return &c, nil
 }
 
 func (m *CommentModel) Delete(ctx context.Context, id string) error {
 	if _, err := uuid.Parse(id); err != nil {
-		return fmt.Errorf("invalid comment id")
+		return ErrInvalidCommentID
 	}
 
 	const query = `
@@ -202,10 +201,10 @@ func (m *CommentModel) Delete(ctx context.Context, id string) error {
 	err := m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return errors.New("no comment found to delete")
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrCommentNotFound
 		}
-		return err
+		return fmt.Errorf("delete comment: %w", err)
 	}
 	return nil
 }
