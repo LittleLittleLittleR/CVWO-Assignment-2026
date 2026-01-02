@@ -1,7 +1,7 @@
 package router
 
 import (
-	"backend/internal/handlers"
+	"cvwo-backend/internal/handlers"
 	"net/http"
 )
 

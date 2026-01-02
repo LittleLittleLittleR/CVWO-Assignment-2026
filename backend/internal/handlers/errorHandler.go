@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"backend/internal/models"
-	"backend/internal/types"
+	"cvwo-backend/internal/models"
+	"cvwo-backend/internal/types"
 	"errors"
 	"net/http"
 )
