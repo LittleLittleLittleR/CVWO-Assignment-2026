@@ -3,7 +3,7 @@ package main
 import (
 	"cvwo-backend/internal/handlers"
 	"cvwo-backend/internal/models"
-	"cvwo-backend/internal/router"
+	"cvwo-backend/internal/routes"
 	"context"
 	"database/sql"
 	"log"
