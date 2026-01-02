@@ -136,9 +136,9 @@ func (m *TopicModel) GetByTopicName(ctx context.Context, topicName string) ([]To
 	return topics, nil
 }
 
-func (m *TopicModel) Create(ctx context.Context, userID, topicName, topicDescription string) (*Topic, error) {
+func (m *TopicModel) Create(ctx context.Context, userID string, topicName string, topicDescription string) (*Topic, error) {
 	const query = `
-		INSERT INTO topic (id, user_id, topic_name, topic_description, created_at)
+		INSERT INTO topics (id, user_id, topic_name, topic_description, created_at)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, user_id, topic_name, topic_description, created_at
 	`
@@ -153,4 +153,51 @@ func (m *TopicModel) Create(ctx context.Context, userID, topicName, topicDescrip
 		return nil, fmt.Errorf("create topic: %w", err)
 	}
 	return &t, nil
+}
+
+func (m *TopicModel) Update(ctx context.Context, id string, topicName string, topicDescription string) (*Topic, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, ErrInvalidTopicID
+	}
+
+	const query = `
+		UPDATE topics
+		SET topic_name = $1, topic_description = $2
+		WHERE id = $3
+		RETURNING id, user_id, topic_name, topic_description, created_at
+	`
+	var t Topic
+	err = m.DB.QueryRowContext(ctx, query, topicName, topicDescription, id).
+		Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrTopicNotFound
+		}
+		return nil, fmt.Errorf("update topic: %w", err)
+	}
+	return &t, nil
+}
+
+func (m *TopicModel) Delete(ctx context.Context, id string) error {
+	if _, err := uuid.Parse(id); err != nil {
+		return ErrInvalidTopicID
+	}
+
+	const query = `
+		DELETE FROM topics
+		WHERE id = $1
+		RETURNING id
+	`
+
+	var deletedID string
+	err := m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrTopicNotFound
+		}
+		return fmt.Errorf("delete topic: %w", err)
+	}
+	return nil
 }

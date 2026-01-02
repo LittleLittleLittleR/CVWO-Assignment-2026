@@ -6,6 +6,7 @@ import (
 	"cvwo-backend/internal/types"
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type TopicHandler struct {
@@ -55,7 +56,7 @@ func (h *TopicHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 func (h *TopicHandler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var req types.CreateUserRequest
+	var req types.CreateTopicRequest
 	decoder := json.NewDecoder(r.Body)
 	requestErr := decoder.Decode(&req)
 	if requestErr != nil {
@@ -76,7 +77,7 @@ func (h *TopicHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	id := r.URL.Query().Get("id")
 
-	var req types.UpdateUserRequest
+	var req types.UpdateTopicRequest
 	decoder := json.NewDecoder(r.Body)
 	requestErr := decoder.Decode(&req)
 	if requestErr != nil {
@@ -91,4 +92,22 @@ func (h *TopicHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	responseTopic := toTopicResponse(topic)
 	writeJSON(w, http.StatusOK, responseTopic)
+}
+
+func (h *TopicHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	
+	id := strings.TrimPrefix(r.URL.Path, "/topics/")
+	if id == "" {
+		writeError(models.ErrInvalidTopicID, w)
+		return
+	}
+
+	err := h.TopicModel.Delete(ctx, id)
+	if err != nil {
+		writeError(err, w)
+		return
+	}
+
+	writeJSON(w, http.StatusOK, nil)
 }
