@@ -6,6 +6,7 @@ import (
 	"cvwo-backend/internal/types"
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type PostHandler struct {
@@ -41,7 +42,13 @@ func (h *PostHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *PostHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+
+	id := strings.TrimPrefix(r.URL.Path, "/posts/")
+	if id == "" {
+		writeError(models.ErrInvalidPostID, w)
+		return
+	}
+	
 	post, err := h.PostModel.GetByID(ctx, id)
 	
 	if err != nil {
@@ -75,7 +82,12 @@ func (h *PostHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *PostHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+	
+	id := strings.TrimPrefix(r.URL.Path, "/posts/")
+	if id == "" {
+		writeError(models.ErrInvalidPostID, w)
+		return
+	}
 
 	var req types.UpdatePostRequest
 	decoder := json.NewDecoder(r.Body)
@@ -92,4 +104,22 @@ func (h *PostHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	responsePost := toPostResponse(post)
 	writeJSON(w, http.StatusOK, responsePost)
+}
+
+func (h *PostHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	
+	id := strings.TrimPrefix(r.URL.Path, "/posts/")
+	if id == "" {
+		writeError(models.ErrInvalidPostID, w)
+		return
+	}
+
+	err := h.PostModel.Delete(ctx, id)
+	if err != nil {
+		writeError(err, w)
+		return
+	}
+
+	writeJSON(w, http.StatusOK, nil)
 }
