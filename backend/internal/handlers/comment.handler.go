@@ -2,10 +2,11 @@
 package handlers
 
 import (
-	"backend/internal/models"
-	"backend/internal/types"
+	"cvwo-backend/internal/models"
+	"cvwo-backend/internal/types"
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type CommentHandler struct {
@@ -41,7 +42,12 @@ func (h *CommentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *CommentHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+	id := strings.TrimPrefix(r.URL.Path, "/comments/")
+	if id == "" {
+		writeError(models.ErrInvalidCommentID, w)
+		return
+	}
+
 	comment, err := h.CommentModel.GetByID(ctx, id)
 	
 	if err != nil {
@@ -75,7 +81,12 @@ func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *CommentHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+
+	id := strings.TrimPrefix(r.URL.Path, "/comments/")
+	if id == "" {
+		writeError(models.ErrInvalidCommentID, w)
+		return
+	}
 
 	var req types.UpdateCommentRequest
 	decoder := json.NewDecoder(r.Body)
@@ -92,4 +103,22 @@ func (h *CommentHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	responseComment := toCommentResponse(comment)
 	writeJSON(w, http.StatusOK, responseComment)
+}
+
+func (h *CommentHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	
+	id := strings.TrimPrefix(r.URL.Path, "/comments/")
+	if id == "" {
+		writeError(models.ErrInvalidCommentID, w)
+		return
+	}
+
+	err := h.CommentModel.Delete(ctx, id)
+	if err != nil {
+		writeError(err, w)
+		return
+	}
+
+	writeJSON(w, http.StatusOK, nil)
 }

@@ -2,10 +2,11 @@
 package handlers
 
 import (
-	"backend/internal/models"
-	"backend/internal/types"
+	"cvwo-backend/internal/models"
+	"cvwo-backend/internal/types"
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type UserHandler struct {
@@ -38,7 +39,12 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+	id := strings.TrimPrefix(r.URL.Path, "/users/")
+	if id == "" {
+		writeError(models.ErrInvalidUserID, w)
+		return
+	}
+
 	user, err := h.UserModel.GetByID(ctx, id)
 	
 	if err != nil {
@@ -72,7 +78,11 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+	id := strings.TrimPrefix(r.URL.Path, "/users/")
+	if id == "" {
+		writeError(models.ErrInvalidUserID, w)
+		return
+	}
 
 	var req types.UpdateUserRequest
 	decoder := json.NewDecoder(r.Body)

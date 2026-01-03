@@ -1,7 +1,7 @@
 package router
 
 import (
-	"backend/internal/handlers"
+	"cvwo-backend/internal/handlers"
 	"net/http"
 )
 
@@ -9,7 +9,7 @@ type UserRouter struct {
 	mux *http.ServeMux
 }
 
-func userRouter(
+func NewUserRouter(
 	userHandler *handlers.UserHandler, 
 	) *UserRouter {
 	mux := http.NewServeMux()
@@ -39,6 +39,6 @@ func userRouter(
 	}
 }
 
-func (r *UserRouter) UserHandler() http.Handler {
+func (r *UserRouter) Handler() http.Handler {
 	return r.mux
 }
