@@ -1,6 +1,6 @@
 module cvwo-backend
 
-go 1.25.5
+go 1.24
 
 require (
 	github.com/bytedance/gopkg v0.1.3 // indirect

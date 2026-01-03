@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16
+    container_name: cvwo-postgres
+    environment:
+      POSTGRES_USER: gwg_user
+      POSTGRES_PASSWORD: gwg_2526
+      POSTGRES_DB: gwg_db
+      TZ: UTC
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+
+  backend:
+    build: .
+    container_name: cvwo-backend
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://gwg_user:gwg_2526@db:5432/gwg_db?sslmode=disable
+      PORT: "8080"
+    ports:
+      - "8080:8080"
+volumes:
+  pgdata:
