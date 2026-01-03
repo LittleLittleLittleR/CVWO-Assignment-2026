@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"cvwo-backend/internal/handlers"
 	"cvwo-backend/internal/models"
 	"cvwo-backend/internal/routes"
@@ -15,6 +16,12 @@ import (
 )
 
 func main() {
+	//env
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file found, using system environment variables")
+	}
+
 	//db
 	db_url := os.Getenv("DATABASE_URL")
 	if db_url == "" {
@@ -44,20 +51,16 @@ func main() {
 	commentHandler := &handlers.CommentHandler{CommentModel: commentModel}
 	
 	//routes
-	userRouter := router.UserRouter(userHandler)
-	topicRouter := router.TopicRouter(topicHandler)
-	postRouter := router.PostRouter(postHandler)
-	commentRouter := router.CommentRouter(commentHandler)
+	userRouter := router.NewUserRouter(userHandler)
+	topicRouter := router.NewTopicRouter(topicHandler)
+	postRouter := router.NewPostRouter(postHandler)
+	commentRouter := router.NewCommentRouter(commentHandler)
 
 	rootMux := http.NewServeMux()
-	rootMux.Handle("/users", userRouter.UserHandler())
-	rootMux.Handle("/users/", userRouter.UserHandler())
-	rootMux.Handle("/topics", topicRouter.TopicHandler())
-	rootMux.Handle("/topics/", topicRouter.TopicHandler())
-	rootMux.Handle("/posts", postRouter.PostHandler())
-	rootMux.Handle("/posts/", postRouter.PostHandler())
-	rootMux.Handle("/comments", commentRouter.CommentHandler())
-	rootMux.Handle("/comments/", commentRouter.CommentHandler())
+	rootMux.Handle("/users/", userRouter.Handler())
+	rootMux.Handle("/topics/", topicRouter.Handler())
+	rootMux.Handle("/posts/", postRouter.Handler())
+	rootMux.Handle("/comments/", commentRouter.Handler())
 
 	//server
 	port := os.Getenv("PORT")

@@ -9,7 +9,7 @@ type TopicRouter struct {
 	mux *http.ServeMux
 }
 
-func topicRouter(
+func NewTopicRouter(
 	topicHandler *handlers.TopicHandler, 
 	) *TopicRouter {
 	mux := http.NewServeMux()
@@ -41,6 +41,6 @@ func topicRouter(
 	}
 }
 
-func (r *TopicRouter) TopicHandler() http.Handler {
+func (r *TopicRouter) Handler() http.Handler {
 	return r.mux
 }

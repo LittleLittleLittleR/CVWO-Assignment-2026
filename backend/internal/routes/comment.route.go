@@ -9,7 +9,7 @@ type CommentRouter struct {
 	mux *http.ServeMux
 }
 
-func commentRouter(
+func NewCommentRouter(
 	commentHandler *handlers.CommentHandler, 
 	) *CommentRouter {
 	mux := http.NewServeMux()
@@ -41,6 +41,6 @@ func commentRouter(
 	}
 }
 
-func (r *CommentRouter) CommentHandler() http.Handler {
+func (r *CommentRouter) Handler() http.Handler {
 	return r.mux
 }

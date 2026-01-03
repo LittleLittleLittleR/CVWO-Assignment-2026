@@ -9,7 +9,7 @@ type PostRouter struct {
 	mux *http.ServeMux
 }
 
-func postRouter(
+func NewPostRouter(
 	postHandler *handlers.PostHandler, 
 	) *PostRouter {
 	mux := http.NewServeMux()
@@ -41,6 +41,6 @@ func postRouter(
 	}
 }
 
-func (r *PostRouter) PostHandler() http.Handler {
+func (r *PostRouter) Handler() http.Handler {
 	return r.mux
 }
