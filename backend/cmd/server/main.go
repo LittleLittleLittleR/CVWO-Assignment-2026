@@ -65,17 +65,17 @@ func main() {
 	//server
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":8080"
+		port = "8080"
 	}
+	addr := ":" + port
 	
 	server := &http.Server{
-		Addr:         port,
+		Addr:         addr,
 		Handler:      rootMux,
 	}
 
 	//shutdown
 	go func() {
-		log.Printf("server listening on %s", port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatal(err)
 		}
