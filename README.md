@@ -8,3 +8,11 @@
 cd backend
 docker compose up --build
 ```
+
+### Frontend
+
+```
+cd frontend
+npm i
+npm run dev
+```
