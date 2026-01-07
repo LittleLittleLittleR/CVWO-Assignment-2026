@@ -12,12 +12,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gwg_user -d gwg_db"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: .
     container_name: cvwo-backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:

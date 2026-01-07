@@ -5,6 +5,7 @@ import (
 	"cvwo-backend/internal/handlers"
 	"cvwo-backend/internal/models"
 	"cvwo-backend/internal/routes"
+	"cvwo-backend/internal/middleware"
 	"context"
 	"database/sql"
 	"log"
@@ -27,14 +28,15 @@ func main() {
 	if db_url == "" {
 		log.Fatal("DATABASE_URL not set")
 	}
-	db, err := sql.Open("postgres", db_url)
-	if err != nil {
-		log.Fatal(err)
+	db, dblErr := sql.Open("postgres", db_url)
+	if dblErr != nil {
+		log.Fatal(dblErr)
 	}
 	defer db.Close()
 
-	if err := db.Ping(); err != nil {
-		log.Fatal(err)
+	dbConnectionErr := db.Ping()
+	if dbConnectionErr != nil {
+		log.Fatal(dbConnectionErr)
 	}
 	log.Println("db connected")
 	
@@ -49,7 +51,7 @@ func main() {
 	topicHandler := &handlers.TopicHandler{TopicModel: topicModel}
 	postHandler := &handlers.PostHandler{PostModel: postModel}
 	commentHandler := &handlers.CommentHandler{CommentModel: commentModel}
-	
+
 	//routes
 	userRouter := router.NewUserRouter(userHandler)
 	topicRouter := router.NewTopicRouter(topicHandler)
@@ -62,6 +64,8 @@ func main() {
 	rootMux.Handle("/posts/", postRouter.Handler())
 	rootMux.Handle("/comments/", commentRouter.Handler())
 
+	handlerWithCORS := middleware.Cors(rootMux)
+
 	//server
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -70,13 +74,14 @@ func main() {
 	addr := ":" + port
 	
 	server := &http.Server{
-		Addr:         addr,
-		Handler:      rootMux,
+		Addr: addr,
+		Handler: handlerWithCORS,
 	}
 
 	//shutdown
 	go func() {
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		err := server.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
 			log.Fatal(err)
 		}
 	}()
