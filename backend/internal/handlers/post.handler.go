@@ -42,10 +42,9 @@ func (h *PostHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *PostHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-
 	id := strings.TrimPrefix(r.URL.Path, "/posts/")
 	if id == "" {
-		writeError(models.ErrInvalidPostID, w)
+		h.GetAll(w, r)
 		return
 	}
 	
