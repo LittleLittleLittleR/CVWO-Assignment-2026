@@ -44,7 +44,7 @@ func (h *CommentHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	id := strings.TrimPrefix(r.URL.Path, "/comments/")
 	if id == "" {
-		writeError(models.ErrInvalidCommentID, w)
+		h.GetAll(w, r)
 		return
 	}
 
