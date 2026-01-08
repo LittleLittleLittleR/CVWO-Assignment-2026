@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"cvwo-backend/internal/handlers"
-	"cvwo-backend/internal/models"
-	"cvwo-backend/internal/middleware"
 	"context"
+	"cvwo-backend/internal/handlers"
+	"cvwo-backend/internal/middleware"
+	"cvwo-backend/internal/models"
 	"database/sql"
 	"log"
 	"net/http"
@@ -13,6 +12,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -54,19 +55,12 @@ func main() {
 	//routes
 	rootMux := http.NewServeMux()
 
-	rootMux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method == http.MethodGet {
-			userHandler.GetAll(w, r)
-    } else if r.Method == http.MethodPost {
-			userHandler.Create(w, r)
-    } else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-    }
-	})
 	rootMux.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			userHandler.GetByID(w, r)
-		}  else if r.Method == http.MethodPut {
+			userHandler.Get(w, r)
+		}  else if r.Method == http.MethodPost {
+			userHandler.Create(w, r)
+		} else if r.Method == http.MethodPut {
 			userHandler.Update(w, r)
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
