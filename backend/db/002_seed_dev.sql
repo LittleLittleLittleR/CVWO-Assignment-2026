@@ -12,6 +12,24 @@ VALUES
     '11111111-1111-1111-1111-111111111111',
     'Go Backend',
     'Discussion about Go backend development'
+  ),
+  (
+    'dddddddd-dddd-dddd-dddd-dddddddddddd',
+    '22222222-2222-2222-2222-222222222222',
+    'React Frontend',
+    'All things React frontend'
+  ),
+  (
+    'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
+    '11111111-1111-1111-1111-111111111111',
+    'Database Design',
+    'Best practices for database design'
+  ),
+  (
+    'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    '22222222-2222-2222-2222-222222222222',
+    'DevOps',
+    'CI/CD and infrastructure management'
   );
 
 -- Posts
