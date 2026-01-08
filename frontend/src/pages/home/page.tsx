@@ -5,7 +5,7 @@ import { MainHeader } from '../../components/Header';
 import { LoginButton } from '../../components/Button';
 
 export default function Home(user: any) {
-  const api_url = import.meta.env.VITE_API_URL || '/api';
+  const api_url = import.meta.env.API_URL || 'http://localhost:8000';
 
   const [topics, setTopics] = useState<Array<any>>([]);
 
@@ -48,6 +48,7 @@ export default function Home(user: any) {
               >
                 <h3>{topic.topic_name}</h3>
                 <p>{topic.topic_description}</p>
+                <p>{topic.created_at}</p>
               </li>
             ))}
           </ul>
@@ -63,6 +64,7 @@ export default function Home(user: any) {
               >
                 <h3>{topic.topic_name}</h3>
                 <p>{topic.topic_description}</p>
+                <p>{topic.created_at}</p>
               </li>
             ))}
           </ul>
