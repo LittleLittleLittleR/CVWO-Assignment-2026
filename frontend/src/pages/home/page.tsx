@@ -4,9 +4,8 @@ import React from 'react';
 import { MainHeader } from '../../components/Header';
 import Header from '../../components/Header';
 import { LoginButton } from '../../components/Button';
-import type { Topic } from '../../types/topic.type';
 
-export default function Home() {
+export default function Home(user: any) {
   const api_url = import.meta.env.VITE_API_URL || '/api';
 
   const [topics, setTopics] = React.useState<Array<any>>([]);
@@ -37,7 +36,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <div className="flex justify-between items-center p-4">
         <MainHeader />
-        <LoginButton />
+        {user ? <LoginButton /> : null}
       </div>
       <main className="flex-1">
         <div>
@@ -57,6 +56,18 @@ export default function Home() {
         </div>
         <div>
           <Header variant="sub" title="Recent" />
+          <ul>
+            {topics.map((topic) => (
+              <li key={topic.id}
+                onClick={() => {
+                  window.location.href = `/topics/${topic.id}`;
+                }}
+              >
+                <h3>{topic.topic_name}</h3>
+                <p>{topic.topic_description}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </main>
     </div>
