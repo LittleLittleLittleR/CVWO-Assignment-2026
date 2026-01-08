@@ -1,14 +1,13 @@
-"use client"
-
 import React from 'react';
-import { MainHeader } from '../../components/Header';
+import { useEffect, useState } from 'react';
 import Header from '../../components/Header';
+import { MainHeader } from '../../components/Header';
 import { LoginButton } from '../../components/Button';
 
 export default function Home(user: any) {
   const api_url = import.meta.env.VITE_API_URL || '/api';
 
-  const [topics, setTopics] = React.useState<Array<any>>([]);
+  const [topics, setTopics] = useState<Array<any>>([]);
 
   const fetchTopics = async () => {
     try {
@@ -20,7 +19,6 @@ export default function Home(user: any) {
       });
 
       const json = await response.json();
-      console.log('Fetched topics:', json);
       setTopics(json);
 
     } catch (error) {
@@ -28,7 +26,7 @@ export default function Home(user: any) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchTopics();
   }, []);
 

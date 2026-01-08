@@ -2,8 +2,9 @@
 
 import React from "react";
 import { useState } from "react";
+import Button from "../../components/Button";
 
-export default function LoginPage() {
+export default function Login() {
   const [mode, setMode] = useState<"login" | "signup">("login");
 
 
@@ -11,27 +12,29 @@ export default function LoginPage() {
     <div>
       <div className="flex justify-center mt-10 margin-auto">
         <div className="mb-4">
-          <button
-            className={`px-4 py-2 mr-2 rounded ${
-              mode === "login" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setMode("login")}
-          >
-            Login
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              mode === "signup" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setMode("signup")}
-          >
-            Sign Up
-          </button>
+          <Button variant="square" value="Log In" onClick={() => setMode("login")} />
+          <Button variant="square" value="Sign Up" onClick={() => setMode("signup")} />
         </div>
-
-        
+        <div>
+          {mode === "login" ? (
+            <form>
+              <div>
+                <label>Username</label>
+                <input type="text" name="username" />
+              </div>
+              <input type="submit" value="Log In" />
+            </form>
+          ) : (
+            <form>
+              <div>
+                <label>Username</label>
+                <input type="text" name="username" />
+              </div>
+              <input type="submit" value="Sign Up" />
+            </form>
+          )}
+        </div>          
       </div>
-      
     </div>
   );
 };
