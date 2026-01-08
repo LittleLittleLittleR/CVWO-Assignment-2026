@@ -1,23 +1,28 @@
+"use client"
+
 import React from 'react';
 import { MainHeader } from '../../components/Header';
 import Header from '../../components/Header';
 import { LoginButton } from '../../components/Button';
+import type { Topic } from '../../types/topic.type';
 
 export default function Home() {
+  const api_url = import.meta.env.VITE_API_URL || '/api';
 
   const [topics, setTopics] = React.useState<Array<any>>([]);
 
   const fetchTopics = async () => {
     try {
-      const response = await fetch('http://localhost:8080/topics', {
+      const response = await fetch(`${api_url}/topics/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      const data = await response.json();
-      setTopics(data.topics);
+      const json = await response.json();
+      console.log('Fetched topics:', json);
+      setTopics(json);
 
     } catch (error) {
       console.error('Error fetching topics:', error);
@@ -39,9 +44,13 @@ export default function Home() {
           <Header variant="sub" title="Trending" />
           <ul>
             {topics.map((topic) => (
-              <li key={topic.id} className="border-b p-4">
-                <h3 className="text-lg font-semibold">{topic.title}</h3>
-                <p className="text-gray-600">{topic.description}</p>
+              <li key={topic.id}
+                onClick={() => {
+                  window.location.href = `/topics/${topic.id}`;
+                }}
+              >
+                <h3>{topic.topic_name}</h3>
+                <p>{topic.topic_description}</p>
               </li>
             ))}
           </ul>
