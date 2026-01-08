@@ -4,7 +4,6 @@ import (
 	"github.com/joho/godotenv"
 	"cvwo-backend/internal/handlers"
 	"cvwo-backend/internal/models"
-	"cvwo-backend/internal/routes"
 	"cvwo-backend/internal/middleware"
 	"context"
 	"database/sql"
@@ -53,16 +52,86 @@ func main() {
 	commentHandler := &handlers.CommentHandler{CommentModel: commentModel}
 
 	//routes
-	userRouter := router.NewUserRouter(userHandler)
-	topicRouter := router.NewTopicRouter(topicHandler)
-	postRouter := router.NewPostRouter(postHandler)
-	commentRouter := router.NewCommentRouter(commentHandler)
-
 	rootMux := http.NewServeMux()
-	rootMux.Handle("/users/", userRouter.Handler())
-	rootMux.Handle("/topics/", topicRouter.Handler())
-	rootMux.Handle("/posts/", postRouter.Handler())
-	rootMux.Handle("/comments/", commentRouter.Handler())
+
+	rootMux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method == http.MethodGet {
+			userHandler.GetAll(w, r)
+    } else if r.Method == http.MethodPost {
+			userHandler.Create(w, r)
+    } else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+    }
+	})
+	rootMux.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			userHandler.GetByID(w, r)
+		}  else if r.Method == http.MethodPut {
+			userHandler.Update(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+	rootMux.HandleFunc("/topics", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method == http.MethodGet {
+			topicHandler.GetAll(w, r)
+    } else if r.Method == http.MethodPost {
+			topicHandler.Create(w, r)
+    } else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+    }
+	})
+	rootMux.HandleFunc("/topics/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method == http.MethodGet {
+			topicHandler.GetByID(w, r)
+    } else if r.Method == http.MethodPut {
+			topicHandler.Update(w, r)
+    } else if r.Method == http.MethodDelete {
+			topicHandler.Delete(w, r)
+    } else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+    }
+	})
+	rootMux.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			postHandler.GetAll(w, r)
+		} else if r.Method == http.MethodPost {
+			postHandler.Create(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+	rootMux.HandleFunc("/posts/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			postHandler.GetByID(w, r)
+		}  else if r.Method == http.MethodPut {
+			postHandler.Update(w, r)
+		} else if r.Method == http.MethodDelete {
+			postHandler.Delete(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+	rootMux.HandleFunc("/comments", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			commentHandler.GetAll(w, r)
+		} else if r.Method == http.MethodPost {
+			commentHandler.Create(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+	rootMux.HandleFunc("/comments/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			commentHandler.GetByID(w, r)
+		}  else if r.Method == http.MethodPut {
+			commentHandler.Update(w, r)
+		} else if r.Method == http.MethodDelete {
+			commentHandler.Delete(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
 
 	handlerWithCORS := middleware.Cors(rootMux)
 
