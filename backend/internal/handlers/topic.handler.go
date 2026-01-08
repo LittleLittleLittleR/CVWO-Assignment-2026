@@ -41,7 +41,12 @@ func (h *TopicHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *TopicHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+	id := strings.TrimPrefix(r.URL.Path, "/topics/")
+	if id == "" {
+		h.GetAll(w, r)
+		return
+	}
+	
 	topic, err := h.TopicModel.GetByID(ctx, id)
 	
 	if err != nil {

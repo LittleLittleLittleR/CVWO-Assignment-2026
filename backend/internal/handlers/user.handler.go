@@ -41,7 +41,7 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	id := strings.TrimPrefix(r.URL.Path, "/users/")
 	if id == "" {
-		writeError(models.ErrInvalidUserID, w)
+		h.GetAll(w, r)
 		return
 	}
 
