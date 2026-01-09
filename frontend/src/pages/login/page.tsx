@@ -1,18 +1,22 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { MainHeader } from '../../components/Header';
 import Button from "../../components/Button";
 
 export default function Login() {
-  const api_url = import.meta.env.API_URL || 'http://localhost:8000';
+  const api_url = import.meta.env.API_URL || 'http://localhost:8080';
+  const navigate = useNavigate();
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [username, setUsername] = useState<string>("");
-  const [user, setUser] = useState<any>(null);
   const [error, setError] = useState<string>("");
 
-  const getUserByUsername = async (username: string) => {
+  const getUserByUsername = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
-      const response = await fetch(`${api_url}/users/${username}`, {
+      const response = await fetch(`${api_url}/users/username/${username}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -20,7 +24,7 @@ export default function Login() {
       });
 
       const json = await response.json();
-      setUser(json);
+      navigate("/home", { state: { user: json } });
 
     } catch (error) {
       console.error('Error fetching user:', error);
@@ -28,7 +32,8 @@ export default function Login() {
     }
   };
 
-  const createUser = async (username: string) => {
+  const createUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const response = await fetch(`${api_url}/users/`, {
         method: 'POST',
@@ -38,7 +43,7 @@ export default function Login() {
         body: JSON.stringify({ username }),
       });
       const json = await response.json();
-      setUser(json);
+      navigate("/home", { state: { user: json } });
 
     } catch (error) {
       console.error('Error creating user:', error);
@@ -51,30 +56,37 @@ export default function Login() {
       <div className="flex justify-left items-center p-4">
         <MainHeader/>
       </div>
-      <div className="flex justify-center mt-10 margin-auto">
+      <div>
         <div className="mb-4">
           <Button variant="square" value="Log In" onClick={() => setMode("login")} />
           <Button variant="square" value="Sign Up" onClick={() => setMode("signup")} />
         </div>
         <div>
           {mode === "login" ? (
-            <form onSubmit={() => getUserByUsername(username)}>
+            <form onSubmit={getUserByUsername}>
               <div>
                 <label>Username</label>
-                <input type="text" name="username" />
+                <input 
+                  type="text" 
+                  value={username} 
+                  onChange={(e) => setUsername(e.target.value)} />
               </div>
               <input type="submit" value="Log In" />
             </form>
           ) : (
-            <form onSubmit={() => createUser(username)}>
+            <form onSubmit={createUser}>
               <div>
                 <label>Username</label>
-                <input type="text" name="username" />
+                <input 
+                  type="text" 
+                  value={username} 
+                  onChange={(e) => setUsername(e.target.value)} />
               </div>
               <input type="submit" value="Sign Up" />
             </form>
           )}
-        </div>          
+        </div>    
+        {error && <p className="text-red-500">{error}</p>}      
       </div>
     </div>
   );
