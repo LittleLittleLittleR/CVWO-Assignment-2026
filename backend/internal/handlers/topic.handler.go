@@ -11,6 +11,8 @@ import (
 
 type TopicHandler struct {
 	TopicModel *models.TopicModel
+	PostModel *models.PostModel
+	CommentModel *models.CommentModel
 }
 
 func toTopicResponse(t *models.Topic) types.TopicResponse {
@@ -23,9 +25,29 @@ func toTopicResponse(t *models.Topic) types.TopicResponse {
 	}
 }
 
-func (h *TopicHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *TopicHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	topics, err := h.TopicModel.GetAll(ctx)
+
+	query := strings.TrimPrefix(r.URL.Path, "/topics/")
+	var topics []models.Topic
+	var topic *models.Topic
+	var err error
+
+	if query == "" {
+		topics, err = h.TopicModel.GetAll(ctx)
+	} else if strings.HasPrefix(query, "id/") {
+		id := strings.TrimPrefix(query, "id/")
+		topic, err = h.TopicModel.GetByID(ctx, id)
+		if topic != nil {
+			topics = []models.Topic{*topic}
+		}
+	} else if strings.HasPrefix(query, "userid/") {
+		userID := strings.TrimPrefix(query, "userid/")
+		topics, err = h.TopicModel.GetByUserID(ctx, userID)
+	} else if strings.HasPrefix(query, "topicname/") {
+		topicName := strings.TrimPrefix(query, "topicname/")
+		topics, err = h.TopicModel.GetByTopicName(ctx, topicName)
+	}
 
 	if err != nil {
 		writeError(err, w)
@@ -37,25 +59,6 @@ func (h *TopicHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		responseTopics[i] = toTopicResponse(&t)
 	}
 	writeJSON(w, http.StatusOK, responseTopics)
-}
-
-func (h *TopicHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	id := strings.TrimPrefix(r.URL.Path, "/topics/")
-	if id == "" {
-		h.GetAll(w, r)
-		return
-	}
-	
-	topic, err := h.TopicModel.GetByID(ctx, id)
-	
-	if err != nil {
-		writeError(err, w)
-		return
-	}
-
-	responseTopic := toTopicResponse(topic)
-	writeJSON(w, http.StatusOK, responseTopic)
 }
 
 func (h *TopicHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -108,9 +111,19 @@ func (h *TopicHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.TopicModel.Delete(ctx, id)
-	if err != nil {
-		writeError(err, w)
+	topicErr := h.TopicModel.Delete(ctx, id)
+	if topicErr != nil {
+		writeError(topicErr, w) // Only the creator can delete the topic
+		return
+	}
+
+	postErr := h.PostModel.DeleteByTopicID(ctx, id)
+	commentErr := h.CommentModel.DeleteByTopicID(ctx, id)
+	if postErr != nil {
+		writeError(postErr, w)
+		return
+	} else if commentErr != nil {
+		writeError(commentErr, w)
 		return
 	}
 

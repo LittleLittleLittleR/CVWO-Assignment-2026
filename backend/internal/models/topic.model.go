@@ -180,7 +180,8 @@ func (m *TopicModel) Update(ctx context.Context, id string, topicName string, to
 }
 
 func (m *TopicModel) Delete(ctx context.Context, id string) error {
-	if _, err := uuid.Parse(id); err != nil {
+	_, err := uuid.Parse(id)
+	if err != nil {
 		return ErrInvalidTopicID
 	}
 
@@ -191,7 +192,7 @@ func (m *TopicModel) Delete(ctx context.Context, id string) error {
 	`
 
 	var deletedID string
-	err := m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
+	err = m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

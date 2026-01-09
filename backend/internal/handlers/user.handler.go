@@ -1,4 +1,3 @@
-
 package handlers
 
 import (
@@ -21,10 +20,30 @@ func toUserResponse(u *models.User) types.UserResponse {
 	}
 }
 
-func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	users, err := h.UserModel.GetAll(ctx)
 
+	query := strings.TrimPrefix(r.URL.Path, "/users/")
+	var users []models.User
+	var user *models.User
+	var err error
+	
+	if query == "" {
+		users, err = h.UserModel.GetAll(ctx)
+	} else if strings.HasPrefix(query, "id/") {
+		id := strings.TrimPrefix(query, "id/")
+		user, err = h.UserModel.GetByID(ctx, id)
+		if user != nil {
+			users = []models.User{*user}
+		}
+	} else if strings.HasPrefix(query, "username/") {
+		username := strings.TrimPrefix(query, "username/")
+		user, err = h.UserModel.GetByUsername(ctx, username)
+		if user != nil {
+			users = []models.User{*user}
+		}
+	}
+	
 	if err != nil {
 		writeError(err, w)
 		return
@@ -35,25 +54,6 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		responseUsers[i] = toUserResponse(&u)
 	}
 	writeJSON(w, http.StatusOK, responseUsers)
-}
-
-func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	id := strings.TrimPrefix(r.URL.Path, "/users/")
-	if id == "" {
-		h.GetAll(w, r)
-		return
-	}
-
-	user, err := h.UserModel.GetByID(ctx, id)
-	
-	if err != nil {
-		writeError(err, w)
-		return
-	}
-
-	responseUser := toUserResponse(user)
-	writeJSON(w, http.StatusOK, responseUser)
 }
 
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {

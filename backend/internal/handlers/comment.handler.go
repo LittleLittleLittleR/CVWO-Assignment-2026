@@ -24,9 +24,29 @@ func toCommentResponse(t *models.Comment) types.CommentResponse {
 	}
 }
 
-func (h *CommentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *CommentHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	comments, err := h.CommentModel.GetAll(ctx)
+
+	query := strings.TrimPrefix(r.URL.Path, "/comments/")
+	var comments []models.Comment
+	var comment *models.Comment
+	var err error
+
+	if query == "" {
+		comments, err = h.CommentModel.GetAll(ctx)
+	} else if strings.HasPrefix(query, "id/") {
+		id := strings.TrimPrefix(query, "id/")
+		comment, err = h.CommentModel.GetByID(ctx, id)
+		if comment != nil {
+			comments = []models.Comment{*comment}
+		}
+	} else if strings.HasPrefix(query, "postid/") {
+		postID := strings.TrimPrefix(query, "postid/")
+		comments, err = h.CommentModel.GetByPostID(ctx, postID)
+	} else if strings.HasPrefix(query, "userid/") {
+		userID := strings.TrimPrefix(query, "userid/")
+		comments, err = h.CommentModel.GetByUserID(ctx, userID)
+	}
 
 	if err != nil {
 		writeError(err, w)
@@ -38,25 +58,6 @@ func (h *CommentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		responseComments[i] = toCommentResponse(&c)
 	}
 	writeJSON(w, http.StatusOK, responseComments)
-}
-
-func (h *CommentHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	id := strings.TrimPrefix(r.URL.Path, "/comments/")
-	if id == "" {
-		h.GetAll(w, r)
-		return
-	}
-
-	comment, err := h.CommentModel.GetByID(ctx, id)
-	
-	if err != nil {
-		writeError(err, w)
-		return
-	}
-
-	responseComment := toCommentResponse(comment)
-	writeJSON(w, http.StatusOK, responseComment)
 }
 
 func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {

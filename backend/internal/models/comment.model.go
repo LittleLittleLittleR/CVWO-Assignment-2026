@@ -187,7 +187,8 @@ func (m *CommentModel) Update(ctx context.Context, id, body string) (*Comment, e
 }
 
 func (m *CommentModel) Delete(ctx context.Context, id string) error {
-	if _, err := uuid.Parse(id); err != nil {
+	_, err := uuid.Parse(id) 
+	if err != nil {
 		return ErrInvalidCommentID
 	}
 
@@ -198,13 +199,62 @@ func (m *CommentModel) Delete(ctx context.Context, id string) error {
 	`
 
 	var deletedID string
-	err := m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
+	err = m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrCommentNotFound
 		}
 		return fmt.Errorf("delete comment: %w", err)
+	}
+	return nil
+}
+
+func (m *CommentModel) DeleteByTopicID(ctx context.Context, topicID string) error {
+	_, err := uuid.Parse(topicID) 
+	if err != nil {
+		return ErrInvalidTopicID
+	}
+
+	const query = `
+		DELETE FROM comments
+		WHERE post_id IN 
+		(SELECT id FROM posts WHERE topic_id = $1)
+		RETURNING id
+	`
+
+	var deletedID string
+	err = m.DB.QueryRowContext(ctx, query, topicID).Scan(&deletedID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrCommentNotFound
+		}
+		return fmt.Errorf("delete comment by topic id: %w", err)
+	}
+	return nil
+}
+
+func (m *CommentModel) DeleteByPostID(ctx context.Context, postID string) error {
+	_, err := uuid.Parse(postID) 
+	if err != nil {
+		return ErrInvalidPostID
+	}
+
+	const query = `
+		DELETE FROM comments
+		WHERE post_id = $1
+		RETURNING id
+	`
+
+	var deletedID string
+	err = m.DB.QueryRowContext(ctx, query, postID).Scan(&deletedID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrCommentNotFound
+		}
+		return fmt.Errorf("delete comment by post id: %w", err)
 	}
 	return nil
 }
