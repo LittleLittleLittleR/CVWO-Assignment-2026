@@ -1,4 +1,3 @@
-
 package handlers
 
 import (
@@ -11,22 +10,43 @@ import (
 
 type PostHandler struct {
 	PostModel *models.PostModel
+	CommentModel *models.CommentModel
 }
 
 func toPostResponse(t *models.Post) types.PostResponse {
 	return types.PostResponse{
-		ID: t.ID,
-		UserID: t.UserID,
-		TopicID: t.TopicID,
-		Title: t.Title,
-		Body: t.Body,
+		ID:        t.ID,
+		UserID:    t.UserID,
+		TopicID:   t.TopicID,
+		Title:     t.Title,
+		Body:      t.Body,
 		CreatedAt: t.CreatedAt,
 	}
 }
 
-func (h *PostHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *PostHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	posts, err := h.PostModel.GetAll(ctx)
+
+	query := strings.TrimPrefix(r.URL.Path, "/topics/")
+	var posts []models.Post
+	var post *models.Post
+	var err error
+
+	if query == "" {
+		posts, err = h.PostModel.GetAll(ctx)
+	} else if strings.HasPrefix(query, "id/") {
+		id := strings.TrimPrefix(query, "id/")
+		post, err = h.PostModel.GetByID(ctx, id)
+		if post != nil {
+			posts = []models.Post{*post}
+		}
+	} else if strings.HasPrefix(query, "userid/") {
+		userID := strings.TrimPrefix(query, "userid/")
+		posts, err = h.PostModel.GetByUserID(ctx, userID)
+	} else if strings.HasPrefix(query, "topicid/") {
+		topicID := strings.TrimPrefix(query, "topicid/")
+		posts, err = h.PostModel.GetByTopicID(ctx, topicID)
+	}
 
 	if err != nil {
 		writeError(err, w)
@@ -38,25 +58,6 @@ func (h *PostHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		responsePosts[i] = toPostResponse(&p)
 	}
 	writeJSON(w, http.StatusOK, responsePosts)
-}
-
-func (h *PostHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	id := strings.TrimPrefix(r.URL.Path, "/posts/")
-	if id == "" {
-		h.GetAll(w, r)
-		return
-	}
-	
-	post, err := h.PostModel.GetByID(ctx, id)
-	
-	if err != nil {
-		writeError(err, w)
-		return
-	}
-
-	responsePost := toPostResponse(post)
-	writeJSON(w, http.StatusOK, responsePost)
 }
 
 func (h *PostHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -107,16 +108,22 @@ func (h *PostHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (h *PostHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	
+
 	id := strings.TrimPrefix(r.URL.Path, "/posts/")
 	if id == "" {
 		writeError(models.ErrInvalidPostID, w)
 		return
 	}
 
-	err := h.PostModel.Delete(ctx, id)
-	if err != nil {
-		writeError(err, w)
+	postErr := h.PostModel.Delete(ctx, id)
+	if postErr != nil {
+		writeError(postErr, w)
+		return
+	}
+
+	commentErr := h.CommentModel.DeleteByPostID(ctx, id)
+	if commentErr != nil {
+		writeError(commentErr, w)
 		return
 	}
 

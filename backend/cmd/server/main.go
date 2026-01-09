@@ -79,19 +79,12 @@ func main() {
 			w.WriteHeader(http.StatusMethodNotAllowed)
     }
 	})
-	rootMux.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet {
-			postHandler.GetAll(w, r)
-		} else if r.Method == http.MethodPost {
-			postHandler.Create(w, r)
-		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		}
-	})
 	rootMux.HandleFunc("/posts/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			postHandler.GetByID(w, r)
-		}  else if r.Method == http.MethodPut {
+			postHandler.Get(w, r)
+		} else if r.Method == http.MethodPost {
+			postHandler.Create(w, r)
+		} else if r.Method == http.MethodPut {
 			postHandler.Update(w, r)
 		} else if r.Method == http.MethodDelete {
 			postHandler.Delete(w, r)
