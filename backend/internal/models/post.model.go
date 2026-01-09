@@ -184,7 +184,8 @@ func (m *PostModel) Update(ctx context.Context, id, title, body string) (*Post, 
 }
 
 func (m *PostModel) Delete(ctx context.Context, id string) error {
-	if _, err := uuid.Parse(id); err != nil {
+	_, err := uuid.Parse(id)
+	if err != nil {
 		return ErrInvalidPostID
 	}
 
@@ -195,13 +196,37 @@ func (m *PostModel) Delete(ctx context.Context, id string) error {
 	`
 
 	var deletedID string
-	err := m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
+	err = m.DB.QueryRowContext(ctx, query, id).Scan(&deletedID)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrPostNotFound
 		}
 		return fmt.Errorf("delete post: %w", err)
+	}
+	return nil
+}
+
+func (m *PostModel) DeleteByTopicID(ctx context.Context, topicID string) error {
+	_, err := uuid.Parse(topicID)
+	if err != nil {
+		return ErrInvalidTopicID
+	}
+
+	const query = `
+		DELETE FROM posts
+		WHERE topic_id = $1
+		RETURNING id
+	`
+
+	var deletedID string
+	err = m.DB.QueryRowContext(ctx, query, topicID).Scan(&deletedID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrPostNotFound
+		}
+		return fmt.Errorf("delete post by topic id: %w", err)
 	}
 	return nil
 }
