@@ -47,7 +47,7 @@ func (m *CommentModel) GetAll(ctx context.Context) ([]Comment, error) {
 	return comments, nil
 }
 
-func (m *CommentModel) GetByID(ctx context.Context, id string) (*Comment, error) {
+func (m *CommentModel) GetByID(ctx context.Context, id string) ([]Comment, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidCommentID
@@ -70,7 +70,7 @@ func (m *CommentModel) GetByID(ctx context.Context, id string) (*Comment, error)
 		return nil, fmt.Errorf("get comment by id: %w", err)
 	}
 
-	return &c, nil
+	return []Comment{c}, nil
 }
 
 func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Comment, error) {
@@ -144,7 +144,7 @@ func (m *CommentModel) Create(
 	ctx context.Context, 
 	userID, postID string, 
 	parentCommentID *string, 
-	body string) (*Comment, error) {
+	body string) ([]Comment, error) {
 	const query = `
 		INSERT INTO comments (id, user_id, post_id, parent_comment_id, body, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
@@ -159,10 +159,10 @@ func (m *CommentModel) Create(
 	if err != nil {
 		return nil, fmt.Errorf("create comment: %w", err)
 	}
-	return &c, nil
+	return []Comment{c}, nil
 }
 
-func (m *CommentModel) Update(ctx context.Context, id, body string) (*Comment, error) {
+func (m *CommentModel) Update(ctx context.Context, id, body string) ([]Comment, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidCommentID
@@ -183,7 +183,7 @@ func (m *CommentModel) Update(ctx context.Context, id, body string) (*Comment, e
 		}
 		return nil, fmt.Errorf("update comment: %w", err)
 	}
-	return &c, nil
+	return []Comment{c}, nil
 }
 
 func (m *CommentModel) Delete(ctx context.Context, id string) error {

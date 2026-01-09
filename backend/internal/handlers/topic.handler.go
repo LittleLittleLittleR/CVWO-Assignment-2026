@@ -15,14 +15,18 @@ type TopicHandler struct {
 	CommentModel *models.CommentModel
 }
 
-func toTopicResponse(t *models.Topic) types.TopicResponse {
-	return types.TopicResponse{
-		ID: t.ID,
-		UserID: t.UserID,
-		TopicName: t.TopicName,
-		TopicDescription: t.TopicDescription,
-		CreatedAt: t.CreatedAt,
+func toTopicResponse(t []models.Topic) []types.TopicResponse {
+	responseTopics := make([]types.TopicResponse, len(t))
+	for i, topic := range t {
+		responseTopics[i] = types.TopicResponse{
+			ID: topic.ID,
+			UserID: topic.UserID,
+			TopicName: topic.TopicName,
+			TopicDescription: topic.TopicDescription,
+			CreatedAt: topic.CreatedAt,
+		}
 	}
+	return responseTopics
 }
 
 func (h *TopicHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -30,17 +34,13 @@ func (h *TopicHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	query := strings.TrimPrefix(r.URL.Path, "/topics/")
 	var topics []models.Topic
-	var topic *models.Topic
 	var err error
 
 	if query == "" {
 		topics, err = h.TopicModel.GetAll(ctx)
 	} else if strings.HasPrefix(query, "id/") {
 		id := strings.TrimPrefix(query, "id/")
-		topic, err = h.TopicModel.GetByID(ctx, id)
-		if topic != nil {
-			topics = []models.Topic{*topic}
-		}
+		topics, err = h.TopicModel.GetByID(ctx, id)
 	} else if strings.HasPrefix(query, "userid/") {
 		userID := strings.TrimPrefix(query, "userid/")
 		topics, err = h.TopicModel.GetByUserID(ctx, userID)
@@ -54,10 +54,7 @@ func (h *TopicHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responseTopics := make([]types.TopicResponse, len(topics))
-	for i, t := range topics {
-		responseTopics[i] = toTopicResponse(&t)
-	}
+	responseTopics := toTopicResponse(topics)
 	writeJSON(w, http.StatusOK, responseTopics)
 }
 
