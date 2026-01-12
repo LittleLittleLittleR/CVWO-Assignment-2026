@@ -45,7 +45,7 @@ func (m *UserModel) GetAll(ctx context.Context) ([]User, error) {
 	return users, nil
 }
 
-func (m *UserModel) GetByID(ctx context.Context, id string) (*User, error) {
+func (m *UserModel) GetByID(ctx context.Context, id string) ([]User, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidUserID
@@ -69,10 +69,10 @@ func (m *UserModel) GetByID(ctx context.Context, id string) (*User, error) {
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
-	return &u, nil
+	return []User{u}, nil
 }
 
-func (m *UserModel) GetByUsername(ctx context.Context, username string) (*User, error) {
+func (m *UserModel) GetByUsername(ctx context.Context, username string) ([]User, error) {
 	const query = `
 		SELECT id, username, is_active 
 		FROM users 
@@ -90,10 +90,10 @@ func (m *UserModel) GetByUsername(ctx context.Context, username string) (*User, 
 		return nil, fmt.Errorf("get user by username: %w", err)
 	}
 
-	return &u, nil
+	return []User{u}, nil
 }
 
-func (m *UserModel) Create(ctx context.Context, username string) (*User, error) {
+func (m *UserModel) Create(ctx context.Context, username string) ([]User, error) {
 	const query = `
 		INSERT INTO users (id, username, is_active)
 		VALUES ($1, $2, $3) 
@@ -116,10 +116,10 @@ func (m *UserModel) Create(ctx context.Context, username string) (*User, error) 
     }
 		return nil, fmt.Errorf("create user: %w", err)
 	}
-	return &u, nil
+	return []User{u}, nil
 }
 
-func (m *UserModel) Update(ctx context.Context, id string, username string, isActive bool) (*User, error) {
+func (m *UserModel) Update(ctx context.Context, id string, username string, isActive bool) ([]User, error) {
 	const query = `
 		UPDATE users 
 		SET username = $1, is_active = $2
@@ -142,5 +142,5 @@ func (m *UserModel) Update(ctx context.Context, id string, username string, isAc
 		}
 		return nil, fmt.Errorf("update user: %w", err)
 	}
-	return &u, nil
+	return []User{u}, nil
 }

@@ -47,7 +47,7 @@ func (m *PostModel) GetAll(ctx context.Context) ([]Post, error) {
 	return posts, nil
 }
 
-func (m *PostModel) GetByID(ctx context.Context, id string) (*Post, error) {
+func (m *PostModel) GetByID(ctx context.Context, id string) ([]Post, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidPostID
@@ -70,7 +70,7 @@ func (m *PostModel) GetByID(ctx context.Context, id string) (*Post, error) {
 		return nil, fmt.Errorf("get post by id: %w", err)
 	}
 
-	return &p, nil
+	return []Post{p}, nil
 }
 
 func (m *PostModel) GetByUserID(ctx context.Context, userID string) ([]Post, error) {
@@ -141,7 +141,7 @@ func (m *PostModel) GetByTopicID(ctx context.Context, topicID string) ([]Post, e
 	return posts, nil
 }
 
-func (m *PostModel) Create(ctx context.Context, userID, topicID, title, body string) (*Post, error) {
+func (m *PostModel) Create(ctx context.Context, userID, topicID, title, body string) ([]Post, error) {
 	const query = `
 		INSERT INTO posts (id, user_id, topic_id, title, body, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
@@ -156,10 +156,10 @@ func (m *PostModel) Create(ctx context.Context, userID, topicID, title, body str
 	if err != nil {
 		return nil, fmt.Errorf("create post: %w", err)
 	}
-	return &p, nil
+	return []Post{p}, nil
 }
 
-func (m *PostModel) Update(ctx context.Context, id, title, body string) (*Post, error) {
+func (m *PostModel) Update(ctx context.Context, id, title, body string) ([]Post, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidPostID
@@ -180,7 +180,7 @@ func (m *PostModel) Update(ctx context.Context, id, title, body string) (*Post, 
 		}
 		return nil, fmt.Errorf("update post: %w", err)
 	}
-	return &p, nil
+	return []Post{p}, nil
 }
 
 func (m *PostModel) Delete(ctx context.Context, id string) error {

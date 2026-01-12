@@ -12,12 +12,16 @@ type UserHandler struct {
 	UserModel *models.UserModel
 }
 
-func toUserResponse(u *models.User) types.UserResponse {
-	return types.UserResponse{
-		ID:       u.ID,
-		Username: u.Username,
-		IsActive: u.IsActive,
+func toUserResponse(u []models.User) []types.UserResponse {
+	responseUsers := make([]types.UserResponse, len(u))
+	for i, user := range u {
+		responseUsers[i] = types.UserResponse{
+			ID: user.ID,
+			Username: user.Username,
+			IsActive: user.IsActive,
+		}
 	}
+	return responseUsers
 }
 
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -25,23 +29,16 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	query := strings.TrimPrefix(r.URL.Path, "/users/")
 	var users []models.User
-	var user *models.User
 	var err error
 	
 	if query == "" {
 		users, err = h.UserModel.GetAll(ctx)
 	} else if strings.HasPrefix(query, "id/") {
 		id := strings.TrimPrefix(query, "id/")
-		user, err = h.UserModel.GetByID(ctx, id)
-		if user != nil {
-			users = []models.User{*user}
-		}
+		users, err = h.UserModel.GetByID(ctx, id)
 	} else if strings.HasPrefix(query, "username/") {
 		username := strings.TrimPrefix(query, "username/")
-		user, err = h.UserModel.GetByUsername(ctx, username)
-		if user != nil {
-			users = []models.User{*user}
-		}
+		users, err = h.UserModel.GetByUsername(ctx, username)
 	}
 	
 	if err != nil {
@@ -49,10 +46,7 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responseUsers := make([]types.UserResponse, len(users))
-	for i, u := range users {
-		responseUsers[i] = toUserResponse(&u)
-	}
+	responseUsers := toUserResponse(users)
 	writeJSON(w, http.StatusOK, responseUsers)
 }
 

@@ -13,15 +13,19 @@ type CommentHandler struct {
 	CommentModel *models.CommentModel
 }
 
-func toCommentResponse(t *models.Comment) types.CommentResponse {
-	return types.CommentResponse{
-		ID: t.ID,
-		UserID: t.UserID,
-		PostID: t.PostID,
-		ParentCommentID: t.ParentCommentID,
-		Body: t.Body,
-		CreatedAt: t.CreatedAt,
+func toCommentResponse(t []models.Comment) []types.CommentResponse {
+	responseComments := make([]types.CommentResponse, len(t))
+	for i, comment := range t {
+		responseComments[i] = types.CommentResponse{
+			ID: comment.ID,
+			UserID: comment.UserID,
+			PostID: comment.PostID,
+			ParentCommentID: comment.ParentCommentID,
+			Body: comment.Body,
+			CreatedAt: comment.CreatedAt,
+		}
 	}
+	return responseComments
 }
 
 func (h *CommentHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -29,17 +33,13 @@ func (h *CommentHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	query := strings.TrimPrefix(r.URL.Path, "/comments/")
 	var comments []models.Comment
-	var comment *models.Comment
 	var err error
 
 	if query == "" {
 		comments, err = h.CommentModel.GetAll(ctx)
 	} else if strings.HasPrefix(query, "id/") {
 		id := strings.TrimPrefix(query, "id/")
-		comment, err = h.CommentModel.GetByID(ctx, id)
-		if comment != nil {
-			comments = []models.Comment{*comment}
-		}
+		comments, err = h.CommentModel.GetByID(ctx, id)
 	} else if strings.HasPrefix(query, "postid/") {
 		postID := strings.TrimPrefix(query, "postid/")
 		comments, err = h.CommentModel.GetByPostID(ctx, postID)
@@ -53,10 +53,7 @@ func (h *CommentHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responseComments := make([]types.CommentResponse, len(comments))
-	for i, c := range comments {
-		responseComments[i] = toCommentResponse(&c)
-	}
+	responseComments := toCommentResponse(comments)
 	writeJSON(w, http.StatusOK, responseComments)
 }
 

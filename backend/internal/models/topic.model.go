@@ -46,7 +46,7 @@ func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
 	return topics, nil
 }
 
-func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
+func (m *TopicModel) GetByID(ctx context.Context, id string) ([]Topic, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidTopicID
@@ -70,7 +70,7 @@ func (m *TopicModel) GetByID(ctx context.Context, id string) (*Topic, error) {
 		return nil, fmt.Errorf("get topic by id: %w", err)
 	}
 
-	return &t, nil
+	return []Topic{t}, nil
 }
 
 func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, error) {
@@ -136,7 +136,7 @@ func (m *TopicModel) GetByTopicName(ctx context.Context, topicName string) ([]To
 	return topics, nil
 }
 
-func (m *TopicModel) Create(ctx context.Context, userID string, topicName string, topicDescription string) (*Topic, error) {
+func (m *TopicModel) Create(ctx context.Context, userID string, topicName string, topicDescription string) ([]Topic, error) {
 	const query = `
 		INSERT INTO topics (id, user_id, topic_name, topic_description, created_at)
 		VALUES ($1, $2, $3, $4, $5)
@@ -152,10 +152,10 @@ func (m *TopicModel) Create(ctx context.Context, userID string, topicName string
 	if err != nil {
 		return nil, fmt.Errorf("create topic: %w", err)
 	}
-	return &t, nil
+	return []Topic{t}, nil
 }
 
-func (m *TopicModel) Update(ctx context.Context, id string, topicName string, topicDescription string) (*Topic, error) {
+func (m *TopicModel) Update(ctx context.Context, id string, topicName string, topicDescription string) ([]Topic, error) {
 	_, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidTopicID
@@ -176,7 +176,7 @@ func (m *TopicModel) Update(ctx context.Context, id string, topicName string, to
 		}
 		return nil, fmt.Errorf("update topic: %w", err)
 	}
-	return &t, nil
+	return []Topic{t}, nil
 }
 
 func (m *TopicModel) Delete(ctx context.Context, id string) error {
