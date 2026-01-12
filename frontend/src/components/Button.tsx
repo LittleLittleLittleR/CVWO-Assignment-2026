@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 type ButtonProps = {
-  variant: "primary" | "secondary" | "square";
+  variant: "primary" | "secondary" | "square" | "back";
   value: string;
   onClick?: () => void;
 };
@@ -10,13 +9,5 @@ type ButtonProps = {
 export default function Button({ variant, value, onClick,}: ButtonProps) {
   return (
     <button onClick={onClick}>{value}</button>
-  );
-}
-
-export function LoginButton() {
-  return (
-    <Link to="/login">
-      <Button variant="primary" value="Log In" />
-    </Link>
   );
 }
