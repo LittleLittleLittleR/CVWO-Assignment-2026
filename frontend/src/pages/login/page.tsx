@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import { MainHeader } from '../../components/Header';
 import Button from "../../components/Button";
+import { useAuth } from "../../Auth";
 
 export default function Login() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [username, setUsername] = useState<string>("");
@@ -24,7 +26,8 @@ export default function Login() {
       });
 
       const json = await response.json();
-      navigate("/home", { state: { user: json } });
+      setUser(json[0]);
+      navigate("/home");
 
     } catch (error) {
       console.error('Error fetching user:', error);

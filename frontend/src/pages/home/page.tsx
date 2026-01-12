@@ -1,22 +1,19 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import type { UserResponse } from '../../../types/user';
 import type { TopicResponse } from '../../../types/topic';
 
 import Header from '../../components/Header';
 import { MainHeader } from '../../components/Header';
-import { LoginButton } from '../../components/Button';
+import Button from '../../components/Button';
+import UserIcon from '../../components/UserIcon';
+import { useAuth } from '../../Auth';
 
 export default function Home() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const location = useLocation();
-  const user: UserResponse | null = location.state?.user[0] || null;
+  const { user } = useAuth();
 
   const [topics, setTopics] = useState<Array<TopicResponse>>([]);
-
-  console.log('User in Home:', user);
 
   const fetchTopics = async () => {
     try {
@@ -43,7 +40,12 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <div className="flex justify-between items-center p-4">
         <MainHeader />
-        {user ? user.username : <LoginButton />}
+        {user ? 
+        <UserIcon/>: 
+        <Link to="/login">
+          <Button variant="primary" value="Log In" /> 
+        </Link>
+        }
       </div>
       <main className="flex-1">
         <div>
