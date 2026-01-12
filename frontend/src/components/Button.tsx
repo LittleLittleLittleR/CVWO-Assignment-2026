@@ -1,19 +1,22 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+
 type ButtonProps = {
-  variant: "primary" | "secondary";
-  link: string;
+  variant: "primary" | "secondary" | "square";
   value: string;
+  onClick?: () => void;
 };
 
-export default function Button({ variant, link, value, }: ButtonProps) {
+export default function Button({ variant, value, onClick,}: ButtonProps) {
   return (
-    <button 
-    onClick={() => window.location.href = link}
-    >
-      {value}
-    </button>
+    <button onClick={onClick}>{value}</button>
   );
 }
 
 export function LoginButton() {
-  return <Button variant="primary" link="/login" value="Log In" />;
+  return (
+    <Link to="/login">
+      <Button variant="primary" value="Log In" />
+    </Link>
+  );
 }
