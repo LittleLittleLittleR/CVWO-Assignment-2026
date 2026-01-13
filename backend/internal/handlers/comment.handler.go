@@ -6,8 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
-
-	"github.com/pelletier/go-toml/query"
 )
 
 type CommentHandler struct {
