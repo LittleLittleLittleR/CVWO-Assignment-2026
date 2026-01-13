@@ -1,14 +1,15 @@
-import React from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
 
 import Button from "./Button";
 import { useAuth } from "../Auth";
 
 export default function UserIcon() {
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const { user } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, setUser } = useAuth();
 
   const handleLogout = () => {
-    const { setUser } = useAuth();
     setUser(null);
   };
 
@@ -17,7 +18,9 @@ export default function UserIcon() {
       <h2 onClick={() => setDropdownOpen(!dropdownOpen)}>{user?.username}</h2>
       {dropdownOpen && (
         <div>
-          <Button variant="primary" value="Profile" onClick={() => window.location.href = `/users/${user?.id}`} />
+          <Link to={`/users/${user?.username}`}>
+            <Button variant="primary" value="Profile"/>
+          </Link>
           <Button variant="square" value="Log Out" onClick={handleLogout} />
         </div>
       )}

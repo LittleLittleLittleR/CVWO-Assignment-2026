@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 
 import type { TopicResponse } from '../../../types/topic';
 
-import Header from '../../components/Header';
-import { MainHeader } from '../../components/Header';
+import Header, { MainHeader } from '../../components/Header';
 import Button from '../../components/Button';
 import UserIcon from '../../components/UserIcon';
 import { useAuth } from '../../Auth';
@@ -52,15 +51,13 @@ export default function Home() {
           <Header variant="sub" title="Trending" />
           <ul>
             {topics.map((topic) => (
-              <li key={topic.id}
-                onClick={() => {
-                  window.location.href = `/topics/${topic.id}`;
-                }}
-              >
-                <h3>{topic.topic_name}</h3>
-                <p>{topic.topic_description}</p>
-                <p>{topic.created_at}</p>
-              </li>
+                <li key={topic.id}>
+                  <Link to={`/topics/${topic.id}`}>
+                    <h3>{topic.topic_name}</h3>
+                    <p>{topic.topic_description}</p>
+                    <p>{topic.created_at}</p>
+                  </Link>
+                </li>
             ))}
           </ul>
         </div>

@@ -7,6 +7,6 @@ export interface TopicResponse {
   created_at: string;
 }
 
-export interface UserDeleteResponse {
+export interface TopicDeleteResponse {
   id: number;
 }
