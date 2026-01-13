@@ -44,7 +44,6 @@ export default function UpdateTopics() {
       });
 
       const json = (await response.json())[0];
-      console.log('Topic updated:', json);
       navigate(`/topics/${json.id}`);
 
     } catch (error) {

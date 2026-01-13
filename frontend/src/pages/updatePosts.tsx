@@ -7,14 +7,14 @@ export default function UpdatePost() {
   const navigate = useNavigate();
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
 
-  const { topicid } = useParams<{ topicid: string }>();
+  const { postid } = useParams<{ postid: string }>();
 
-  const [topicName, setTopicName] = useState('');
-  const [topicDescription, setTopicDescription] = useState('');
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
 
-  const getTopic = async () => {
+  const getPost = async () => {
     try {
-      const response = await fetch(`${api_url}/topics/id/${topicid}`, {
+      const response = await fetch(`${api_url}/posts/id/${postid}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -22,54 +22,53 @@ export default function UpdatePost() {
       });
 
       const json = (await response.json())[0];
-      setTopicName(json.topic_name);
-      setTopicDescription(json.topic_description);
+      setPostTitle(json.title);
+      setPostBody(json.body);
     } catch (error) {
-      console.error('Error fetching topic:', error);
+      console.error('Error fetching post:', error);
     }
   };
 
-  const updateTopic = async (e: React.FormEvent<HTMLFormElement>) => {
+  const updatePost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${api_url}/topics/id/${topicid}`, {
+      const response = await fetch(`${api_url}/posts/id/${postid}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          topic_name: topicName,
-          topic_description: topicDescription,
+          title: postTitle,
+          body: postBody,
         }),
       });
 
       const json = (await response.json())[0];
-      console.log('Topic updated:', json);
-      navigate(`/topics/${json.id}`);
+      navigate(`/posts/${json.id}`);
 
     } catch (error) {
-      console.error('Error updating topic:', error);
+      console.error('Error updating post:', error);
     }
   };
 
   useEffect(() => {
-      if (!topicid) return;
-      getTopic();
-  }, [topicid]);
+      if (!postid) return;
+      getPost();
+  }, [postid]);
 
   return (
     <div>
-      <Header variant="sub" title="Update Topic" />
-      <form onSubmit={updateTopic}>
+      <Header variant="sub" title="Update Post" />
+      <form onSubmit={updatePost}>
         <div>
-          <label htmlFor="topicName">Topic Name</label>
-          <input type="text" value={topicName} onChange={(e) => setTopicName(e.target.value)} />
+          <label htmlFor="postTitle">Post Title</label>
+          <input type="text" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
         </div>
         <div>
-          <label htmlFor="topicDescription">Topic Description</label>
-          <textarea value={topicDescription} onChange={(e) => setTopicDescription(e.target.value)} />
+          <label htmlFor="postBody">Post Body</label>
+          <textarea value={postBody} onChange={(e) => setPostBody(e.target.value)} />
         </div>
-        <input type="submit" value="Update Topic" />
+        <input type="submit" value="Update Post" />
       </form>
     </div>
   );
