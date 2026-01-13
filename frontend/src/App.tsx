@@ -6,6 +6,8 @@ import Topic from "./pages/topic";
 import AddTopics from "./pages/addTopics";
 import UpdateTopics from "./pages/updateTopics";
 import Post from "./pages/post";
+import AddPosts from "./pages/addPosts";
+import UpdatePost from "./pages/updatePosts";
 import { useAuth } from "./Auth";
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
           <Route path="/updateTopics/:topicid" element={<UpdateTopics />} />
 
           <Route path="/posts/:postid" element={<Post />} />
+          <Route path="/addPosts/:topicid" element={<AddPosts />} />
+          <Route path="/updatePosts/:postid" element={<UpdatePost />} />
         </Routes>
       </BrowserRouter>
     </>

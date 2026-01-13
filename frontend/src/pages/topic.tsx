@@ -58,10 +58,17 @@ export default function Topic() {
         </Link>}
       </div>
       <main className="flex-1">
-        <Header variant="sub" title={topic?.topic_name} />
+        <Header variant="sub" title={`${topic?.topic_name} by ${topic?.username}`} />
+        {topic?.user_id === user?.id && (
         <Link to={`/updateTopics/${topicid}`}>
           <Button variant="secondary" value="Update Topic"/>
         </Link>
+        )}
+        {user && (
+        <Link to={`/addPosts/${topicid}`}>
+          <Button variant="secondary" value="Add Post"/>
+        </Link>
+        )}
         <div>
           <Header variant="sub" title="Posts" />
           <ul>
