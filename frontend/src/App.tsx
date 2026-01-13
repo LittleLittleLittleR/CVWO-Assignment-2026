@@ -3,7 +3,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import User from "./pages/userProfile";
 import Topic from "./pages/topic";
-import { useAuth, AuthProvider } from "./Auth";
+import { useAuth } from "./Auth";
 
 function App() {
   const { loading } = useAuth();

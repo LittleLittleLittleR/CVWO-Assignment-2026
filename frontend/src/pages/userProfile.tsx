@@ -48,10 +48,7 @@ export default function User() {
       setProfileTopics(topicJson);
       const postsJson = await postsResponse.json();
       setProfilePosts(postsJson);
-
-      console.log("Fetched profile user:", userJson);
-      console.log("Fetched profile topics:", topicJson);
-      console.log("Fetched profile posts:", postsJson);
+      
     } catch (error) {
       console.error('Error fetching user:', error);
     }
