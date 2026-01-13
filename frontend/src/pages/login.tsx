@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { MainHeader } from '../../components/Header';
-import Button from "../../components/Button";
-import { useAuth } from "../../Auth";
+import { MainHeader } from '../components/Header';
+import Button from "../components/Button";
+import { useAuth } from "../Auth";
 
 export default function Login() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -14,43 +14,40 @@ export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  const getUserByUsername = async (e: React.FormEvent) => {
+  const getByUsername = (action: "login" | "signup") => async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${api_url}/users/username/${username}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      let response;
+      if (action === "login") {
+        response = await fetch(`${api_url}/users/username/${username}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+      } else {
+        response = await fetch(`${api_url}/users/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        })
+      }
 
       const json = await response.json();
+
+      if (!json || json.length === 0) {
+        throw new Error("User not found");
+      }
+
       setUser(json[0]);
       navigate("/home");
 
     } catch (error) {
       console.error('Error fetching user:', error);
       setError(`User ${username} not found.`);
-    }
-  };
-
-  const createUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${api_url}/users/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username }),
-      });
-      const json = await response.json();
-      navigate("/home", { state: { user: json } });
-
-    } catch (error) {
-      console.error('Error creating user:', error);
-      setError(`Failed to create user ${username}.`);
     }
   };
 
@@ -66,7 +63,7 @@ export default function Login() {
         </div>
         <div>
           {mode === "login" ? (
-            <form onSubmit={getUserByUsername}>
+            <form onSubmit={getByUsername("login")}>
               <div>
                 <label>Username</label>
                 <input 
@@ -77,7 +74,7 @@ export default function Login() {
               <input type="submit" value="Log In" />
             </form>
           ) : (
-            <form onSubmit={createUser}>
+            <form onSubmit={getByUsername("signup")}>
               <div>
                 <label>Username</label>
                 <input 

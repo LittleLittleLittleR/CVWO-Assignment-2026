@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import type { TopicResponse } from '../../../../types/topic';
-import type { PostResponse } from '../../../../types/post';
-import type { UserResponse } from '../../../../types/user';
+import type { TopicResponse } from '../../types/topic';
+import type { PostResponse } from '../../types/post';
+import type { UserResponse } from '../../types/user';
 
-import Header, { MainHeader } from '../../../components/Header';
-import UserIcon from '../../../components/UserIcon';
-import Button from '../../../components/Button';
-import { useAuth } from '../../../Auth';
+import Header, { MainHeader } from '../components/Header';
+import UserIcon from '../components/UserIcon';
+import Button from '../components/Button';
+import { useAuth } from '../Auth';
 
 export default function User() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -48,10 +48,7 @@ export default function User() {
       setProfileTopics(topicJson);
       const postsJson = await postsResponse.json();
       setProfilePosts(postsJson);
-
-      console.log("Fetched profile user:", userJson);
-      console.log("Fetched profile topics:", topicJson);
-      console.log("Fetched profile posts:", postsJson);
+      
     } catch (error) {
       console.error('Error fetching user:', error);
     }

@@ -9,7 +9,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USER_KEY = "auth_user_id";
+const USER_KEY = "auth_user";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setLocalUser] = useState<UserResponse | null>(null);
@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const setUser = (user: UserResponse | null) => {
     if (user) {
-      localStorage.setItem(USER_KEY, String(user.id));
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
     } else {
       localStorage.removeItem(USER_KEY);
     }
@@ -25,17 +25,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem(USER_KEY);
-    if (!userId) {
+    const stored = localStorage.getItem(USER_KEY);
+    if (!stored) {
       setLoading(false);
       return;
     }
-    fetch(`${import.meta.env.API_URL}/users/id/${userId}`)
-      .then(res => (res.ok ? res.json() : null))
-      .then(user => setUser(user))
-      .finally(() => setLoading(false));
+  
+    setLocalUser(JSON.parse(stored));
+    setLoading(false);
   }, []);
-
+  
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
