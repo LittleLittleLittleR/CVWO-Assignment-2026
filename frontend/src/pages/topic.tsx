@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import UserIcon from '../components/UserIcon';
 import { useAuth } from '../Auth';
 
+import type { UserResponse } from '../../types/user';
 import type { TopicResponse } from '../../types/topic';
 import type { PostResponse } from '../../types/post';
 
@@ -15,6 +16,7 @@ export default function Topic() {
 
   const { topicid } = useParams<{ topicid: string }>();
 
+  const [topicUser, setTopicUser] = useState<UserResponse | null>(null);
   const [topic, setTopic] = useState<TopicResponse | null>(null);
   const [posts, setPosts] = useState<Array<PostResponse>>([]);
 
@@ -32,11 +34,19 @@ export default function Topic() {
           'Content-Type': 'application/json',
         },
       });
-
-      const topicJson = await topicResponse.json();
+      const topicJson = (await topicResponse.json())[0];
       const postJson = await postResponse.json();
-      setTopic(topicJson[0]);
-      setPosts(postJson);
+      await setTopic(topicJson);
+      await setPosts(postJson);
+
+      const userResponse = await fetch(`${api_url}/users/id/${topicJson?.user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const userJson = (await userResponse.json())[0];
+      await setTopicUser(userJson);
 
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -58,19 +68,23 @@ export default function Topic() {
         </Link>}
       </div>
       <main className="flex-1">
-        <Header variant="sub" title={`${topic?.topic_name} by ${topic?.username}`} />
-        {topic?.user_id === user?.id && (
-        <Link to={`/updateTopics/${topicid}`}>
-          <Button variant="secondary" value="Update Topic"/>
-        </Link>
-        )}
-        {user && (
-        <Link to={`/addPosts/${topicid}`}>
-          <Button variant="secondary" value="Add Post"/>
-        </Link>
-        )}
         <div>
-          <Header variant="sub" title="Posts" />
+          <Header variant="sub" title={`${topic?.topic_name} by ${topicUser?.username}`} />
+          {topic?.user_id === user?.id && (
+          <Link to={`/updateTopics/${topicid}`}>
+            <Button variant="secondary" value="Update Topic"/>
+          </Link>
+          )}
+          {user && (
+          <Link to={`/addPosts/${topicid}`}>
+            <Button variant="secondary" value="Add Post"/>
+          </Link>
+          )}
+        </div>
+        <p>
+          {topic?.topic_description}
+        </p>
+        <div>
           <ul>
             {posts.map((post) => (
               <li key={post.id}>

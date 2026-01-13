@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 type HeaderProps = {
   variant: "main" | "sub";
   title: string | undefined;
@@ -18,5 +20,9 @@ export default function Header({ variant, title }: HeaderProps) {
 }
 
 export function MainHeader() {
-  return <Header variant="main" title="Gossip with Go" />;
+  return (
+  <Link to="/home">
+    <Header variant="main" title="Gossip with Go" />
+  </Link>
+  );
 }

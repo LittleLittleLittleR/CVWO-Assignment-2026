@@ -30,8 +30,7 @@ export default function AddPosts() {
           }),
         });
   
-        const json = (await response.json());
-        console.log('Post created:', json);
+        const json = (await response.json())[0];
         navigate(`/posts/${json.id}`);
 
       } catch (error) {

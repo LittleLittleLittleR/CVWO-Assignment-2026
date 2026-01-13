@@ -58,10 +58,15 @@ export default function Topic() {
         </Link>}
       </div>
       <main className="flex-1">
-        <Header variant="sub" title={post?.title} />
-        <Link to={`/updatePosts/${postid}`}>
-          <Button variant="secondary" value="Update Post"/>
-        </Link>
+        <div>
+          <Header variant="sub" title={post?.title} />
+          <Link to={`/updatePosts/${postid}`}>
+            <Button variant="secondary" value="Edit Post"/>
+          </Link>
+        </div>
+        <p>
+          {post?.body}
+        </p>
         <div>
           <Header variant="sub" title="Comments" />
           <ul>
