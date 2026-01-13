@@ -3,6 +3,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import User from "./pages/userProfile";
 import Topic from "./pages/topic";
+import AddTopics from "./pages/addTopics";
 import { useAuth } from "./Auth";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/users/:username" element={<User/>} />
           <Route path="/topics/:topicid" element={<Topic/>} />
+          <Route path="/addTopics" element={<AddTopics />} />
         </Routes>
       </BrowserRouter>
     </>

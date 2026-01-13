@@ -53,6 +53,9 @@ export default function Home() {
       <main className="flex-1">
         <div>
           <Header variant="sub" title="Topics" />
+          <Link to="/addTopics">
+            <Button variant="secondary" value="Create Topic"/>
+          </Link>
           <ul>
             {topics.map((topic) => (
                 <li key={topic.id}>

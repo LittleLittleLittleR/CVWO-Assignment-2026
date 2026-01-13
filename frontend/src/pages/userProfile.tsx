@@ -75,6 +75,9 @@ export default function User() {
         <Button variant="secondary" value="Topics" onClick={() => setActiveTab('topics')} />
         <Button variant="secondary" value="Posts" onClick={() => setActiveTab('posts')} />
         {activeTab === 'topics' && <div>
+          <Link to="/addTopics">
+            <Button variant="secondary" value="Create Topic"/>
+          </Link>
           <ul>
             {profileTopics.map((topic) => (
               <li key={topic.id}
