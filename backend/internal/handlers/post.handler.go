@@ -31,7 +31,7 @@ func toPostResponse(t []models.Post) []types.PostResponse {
 func (h *PostHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	query := strings.TrimPrefix(r.URL.Path, "/topics/")
+	query := strings.TrimPrefix(r.URL.Path, "/posts/")
 	var posts []models.Post
 	var err error
 
