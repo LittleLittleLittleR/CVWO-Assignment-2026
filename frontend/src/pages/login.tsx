@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { MainHeader } from '../../components/Header';
-import Button from "../../components/Button";
-import { useAuth } from "../../Auth";
+import { MainHeader } from '../components/Header';
+import Button from "../components/Button";
+import { useAuth } from "../Auth";
 
 export default function Login() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';

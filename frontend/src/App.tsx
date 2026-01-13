@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/home/page";
-import Login from "./pages/login/page";
-import User from "./pages/user/[userId]/page";
+import Home from "./pages/home";
+import Login from "./pages/login";
+import User from "./pages/userProfile";
+import Topic from "./pages/topic";
 import { useAuth, AuthProvider } from "./Auth";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/home" element={<Home/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/users/:username" element={<User/>} />
+          <Route path="/topics/:topicid" element={<Topic/>} />
         </Routes>
       </BrowserRouter>
     </>

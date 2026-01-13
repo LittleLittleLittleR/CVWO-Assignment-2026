@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import type { TopicResponse } from '../../../types/topic';
+import type { TopicResponse } from '../../types/topic';
 
-import Header, { MainHeader } from '../../components/Header';
-import Button from '../../components/Button';
-import UserIcon from '../../components/UserIcon';
-import { useAuth } from '../../Auth';
+import Header, { MainHeader } from '../components/Header';
+import Button from '../components/Button';
+import UserIcon from '../components/UserIcon';
+import { useAuth } from '../Auth';
 
 export default function Home() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
