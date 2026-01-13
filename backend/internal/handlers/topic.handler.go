@@ -80,7 +80,8 @@ func (h *TopicHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *TopicHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := r.URL.Query().Get("id")
+	query := strings.TrimPrefix(r.URL.Path, "/topics/")
+	id := strings.TrimPrefix(query, "id/")
 
 	var req types.UpdateTopicRequest
 	decoder := json.NewDecoder(r.Body)
@@ -101,8 +102,8 @@ func (h *TopicHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (h *TopicHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	
-	id := strings.TrimPrefix(r.URL.Path, "/topics/")
+	query := strings.TrimPrefix(r.URL.Path, "/topics/")
+	id := strings.TrimPrefix(query, "id/")
 	if id == "" {
 		writeError(models.ErrInvalidTopicID, w)
 		return

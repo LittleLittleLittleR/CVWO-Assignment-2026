@@ -1,4 +1,3 @@
-
 package handlers
 
 import (
@@ -7,6 +6,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+
+	"github.com/pelletier/go-toml/query"
 )
 
 type CommentHandler struct {
@@ -79,8 +80,9 @@ func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *CommentHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-
-	id := strings.TrimPrefix(r.URL.Path, "/comments/")
+	
+	query := strings.TrimPrefix(r.URL.Path, "/comments/")
+	id := strings.TrimPrefix(query, "id/")
 	if id == "" {
 		writeError(models.ErrInvalidCommentID, w)
 		return
@@ -105,8 +107,8 @@ func (h *CommentHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (h *CommentHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	
-	id := strings.TrimPrefix(r.URL.Path, "/comments/")
+	query := strings.TrimPrefix(r.URL.Path, "/comments/")
+	id := strings.TrimPrefix(query, "id/")
 	if id == "" {
 		writeError(models.ErrInvalidCommentID, w)
 		return

@@ -79,8 +79,8 @@ func (h *PostHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *PostHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	
-	id := strings.TrimPrefix(r.URL.Path, "/posts/")
+	query := strings.TrimPrefix(r.URL.Path, "/posts/")
+	id := strings.TrimPrefix(query, "id/")
 	if id == "" {
 		writeError(models.ErrInvalidPostID, w)
 		return
@@ -105,8 +105,8 @@ func (h *PostHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (h *PostHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-
-	id := strings.TrimPrefix(r.URL.Path, "/posts/")
+	query := strings.TrimPrefix(r.URL.Path, "/posts/")
+	id := strings.TrimPrefix(query, "id/")
 	if id == "" {
 		writeError(models.ErrInvalidPostID, w)
 		return
