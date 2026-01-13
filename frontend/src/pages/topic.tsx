@@ -66,13 +66,13 @@ export default function Topic() {
           <Header variant="sub" title="Posts" />
           <ul>
             {posts.map((post) => (
-              <li key={post.id}
-                onClick={() => {
-                  window.location.href = `/post/${post.id}`;
-                }}
-              >
-                <h3>{post.title}</h3>
-                <p>{post.created_at}</p>
+              <li key={post.id}>
+                <Link to={`/posts/${post.id}`}>
+                  <h3>{post.title}</h3>
+                  <p>{post.body}</p>
+                  <p>{post.created_at}</p>
+                </Link>
+                
               </li>
             ))}
           </ul>

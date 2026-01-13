@@ -80,14 +80,12 @@ export default function User() {
           </Link>
           <ul>
             {profileTopics.map((topic) => (
-              <li key={topic.id}
-                onClick={() => {
-                  window.location.href = `/topics/${topic.id}`;
-                }}
-              >
-                <h3>{topic.topic_name}</h3>
-                <p>{topic.topic_description}</p>
-                <p>{topic.created_at}</p>
+              <li key={topic.id}>
+                <Link to={`/topics/${topic.id}`}>
+                  <h3>{topic.topic_name}</h3>
+                  <p>{topic.topic_description}</p>
+                  <p>{topic.created_at}</p>
+                </Link>
               </li>
             ))}
           </ul>
@@ -95,14 +93,12 @@ export default function User() {
         {activeTab === 'posts' && <div>
           <ul>
             {profilePosts.map((post) => (
-              <li key={post.id}
-                onClick={() => {
-                  window.location.href = `/posts/${post.id}`;
-                }}
-              >
-                <h3>{post.title}</h3>
-                <p>{post.body}</p>
-                <p>{post.created_at}</p>
+              <li key={post.id}>
+                <Link to={`/posts/${post.id}`}>
+                  <h3>{post.title}</h3>
+                  <p>{post.body}</p>
+                  <p>{post.created_at}</p>
+                </Link>
               </li>
             ))}
           </ul>
