@@ -72,7 +72,8 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := strings.TrimPrefix(r.URL.Path, "/users/")
+	query := strings.TrimPrefix(r.URL.Path, "/users/")
+	id := strings.TrimPrefix(query, "id/")
 	if id == "" {
 		writeError(models.ErrInvalidUserID, w)
 		return
