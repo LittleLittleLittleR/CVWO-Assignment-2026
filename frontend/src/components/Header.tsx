@@ -1,6 +1,6 @@
 type HeaderProps = {
   variant: "main" | "sub";
-  title: string;
+  title: string | undefined;
 };
 
 export default function Header({ variant, title }: HeaderProps) {
