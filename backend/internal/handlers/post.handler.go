@@ -10,7 +10,6 @@ import (
 
 type PostHandler struct {
 	PostModel *models.PostModel
-	CommentModel *models.CommentModel
 }
 
 func toPostResponse(t []models.Post) []types.PostResponse {
@@ -117,12 +116,5 @@ func (h *PostHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		writeError(postErr, w)
 		return
 	}
-
-	commentErr := h.CommentModel.DeleteByPostID(ctx, id)
-	if commentErr != nil {
-		writeError(commentErr, w)
-		return
-	}
-
 	writeJSON(w, http.StatusOK, nil)
 }
