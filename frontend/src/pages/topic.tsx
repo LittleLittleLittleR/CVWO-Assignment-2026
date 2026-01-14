@@ -13,7 +13,11 @@ import type { PostResponse } from '../../types/post';
 
 export default function Topic() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const { topicid } = useParams<{ topicid: string }>();
 
@@ -66,7 +70,7 @@ export default function Topic() {
         <MainHeader />
         {user ? 
         <UserIcon/>: 
-        <Link to="/login">
+        <Link to="/login" state={{ returnTo: `/topics/${topicid}` }}>
           <Button variant="primary" value="Log In" /> 
         </Link>}
       </div>
@@ -75,10 +79,10 @@ export default function Topic() {
           <Header variant="sub" title={`${topicUser?.username} | ${topic?.topic_name}`} />
           {topic?.user_id === user?.id && (
           <>
-            <Link to={`/updateTopics/${topicid}`}>
+            <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
               <Button variant="secondary" value="Update Topic"/>
             </Link>
-            <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(true)}/>
+            <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(!deleteActive)}/>
           </>
           )}
         </div>
@@ -87,7 +91,7 @@ export default function Topic() {
         </p>
         <Header variant="sub" title="Posts" />
         {user && (
-        <Link to={`/addPosts/${topicid}`}>
+        <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
           <Button variant="secondary" value="Create Post"/>
         </Link>
         )}
@@ -95,7 +99,7 @@ export default function Topic() {
           <ul>
             {posts.map((post) => (
               <li key={post.id}>
-                <Link to={`/posts/${post.id}`}>
+                <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${topicid}` }}>
                   <h3>{post.title}</h3>
                   <p>{post.body}</p>
                   <p>{post.created_at}</p>

@@ -8,7 +8,11 @@ import { useAuth } from "../Auth";
 export default function Login() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { setUser, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [username, setUsername] = useState<string>("");

@@ -46,7 +46,7 @@ export default function Home() {
         <MainHeader />
         {user ? 
         <UserIcon/>: 
-        <Link to="/login">
+        <Link to="/login" state={{ returnTo: `/home` }}>
           <Button variant="primary" value="Log In" /> 
         </Link>
         }
@@ -54,13 +54,13 @@ export default function Home() {
       <main className="flex-1">
         <div>
           <Header variant="sub" title="Topics" />
-          <Link to="/addTopics">
+          <Link to="/addTopics" state={{ returnTo: `/home` }}>
             <Button variant="secondary" value="Create Topic"/>
           </Link>
           <ul>
             {topics.map((topic) => (
                 <li key={topic.id}>
-                  <Link to={`/topics/${topic.id}`}>
+                  <Link to={`/topics/${topic.id}`} state={{ returnTo: `/home` }}>
                     <h3>{topic.topic_name}</h3>
                     <p>{topic.topic_description}</p>
                     <p>{topic.created_at}</p>

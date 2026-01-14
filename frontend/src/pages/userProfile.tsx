@@ -12,7 +12,11 @@ import { useAuth } from '../Auth';
 
 export default function User() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const { username } = useParams<{ username: string }>();
 

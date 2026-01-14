@@ -13,7 +13,11 @@ import type { CommentResponse } from '../../types/comment';
 
 export default function Post() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const { postid } = useParams<{ postid: string }>();
 
@@ -67,7 +71,7 @@ export default function Post() {
         <MainHeader />
         {user ? 
         <UserIcon/>: 
-        <Link to="/login">
+        <Link to="/login" state={{ returnTo: `/posts/${postid}` }}>
           <Button variant="primary" value="Log In" /> 
         </Link>}
       </div>
@@ -76,7 +80,7 @@ export default function Post() {
           <Header variant="sub" title={`${postUser?.username} | ${post?.title}`} />
           {post?.user_id === user?.id && (
           <>
-            <Link to={`/updatePosts/${postid}`}>
+            <Link to={`/updatePosts/${postid}`} state={{ returnTo: `/posts/${postid}` }}>
               <Button variant="secondary" value="Edit Post"/>
             </Link>
             <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(!deleteActive)}/>
@@ -88,9 +92,7 @@ export default function Post() {
         </p>
         <Header variant="sub" title="Comments" />
         {/*user && (
-          <Link to={`/addPosts/${topicid}`}>
-            <Button variant="secondary" value="Comment"/>
-          </Link>
+          <Button variant="secondary" value="Comment"/>
           )*/}
         <div>
           <ul>

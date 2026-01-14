@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "./Button";
 
 type DeleteWarningProps = {
@@ -12,11 +12,18 @@ export default function DeleteWarning({ item_id, item_name, item_type }: DeleteW
 
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.returnTo;
 
   const deleteItem = async () => {
     try {
-      fetch(`${api_url}/${item_type}s/id/${item_id}`, { method: "DELETE" });
-      navigate(-1);
+      await fetch(`${api_url}/${item_type}s/id/${item_id}`, { method: "DELETE" });
+      
+      if (returnTo) {
+        navigate(returnTo, { replace: true });
+      } else {
+        navigate("/home", { replace: true });
+      }
 
     } catch (error) {
       console.error("An error occurred while deleting the item:", error);

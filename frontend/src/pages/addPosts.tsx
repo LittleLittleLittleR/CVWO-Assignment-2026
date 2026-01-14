@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import Header, { MainHeader } from '../components/Header';
 import { BackButton } from '../components/Button';
@@ -8,13 +8,21 @@ import UserIcon from '../components/UserIcon';
 
 export default function AddPosts() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.returnTo;
+
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const { topicid } = useParams<{ topicid: string }>();
 
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
+;
 
   const createPost = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -33,7 +41,9 @@ export default function AddPosts() {
         });
   
         const json = (await response.json())[0];
-        navigate(`/posts/${json.id}`);
+        navigate(`/posts/${json.id}`, {
+          state: { returnTo: returnTo ?? `/topics/${topicid}` },
+        });
 
       } catch (error) {
         console.error('Error creating post:', error);
