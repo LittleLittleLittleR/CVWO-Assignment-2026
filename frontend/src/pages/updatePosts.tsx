@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import Header from '../components/Header';
+import Header, { MainHeader } from '../components/Header';
+import Button, { BackButton } from '../components/Button';
+import UserIcon from '../components/UserIcon';
 
 export default function UpdatePost() {
   const navigate = useNavigate();
@@ -58,6 +60,11 @@ export default function UpdatePost() {
 
   return (
     <div>
+      <div className="flex justify-between items-center p-4">
+        <BackButton />
+        <MainHeader />
+        <UserIcon/>
+      </div>
       <Header variant="sub" title="Update Post" />
       <form onSubmit={updatePost}>
         <div>

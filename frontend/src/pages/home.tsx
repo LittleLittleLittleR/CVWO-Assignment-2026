@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import type { TopicResponse } from '../../types/topic';
 
 import Header, { MainHeader } from '../components/Header';
-import Button from '../components/Button';
+import Button, { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
 import { useAuth } from '../Auth';
 
@@ -42,6 +42,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex justify-between items-center p-4">
+        <BackButton />
         <MainHeader />
         {user ? 
         <UserIcon/>: 

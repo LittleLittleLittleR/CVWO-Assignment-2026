@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import Header from '../components/Header';
+import Header, { MainHeader } from '../components/Header';
+import { BackButton } from '../components/Button';
 import { useAuth } from '../Auth';
+import UserIcon from '../components/UserIcon';
 
 export default function AddPosts() {
   const navigate = useNavigate();
@@ -40,6 +42,11 @@ export default function AddPosts() {
 
   return (
     <div>
+      <div className="flex justify-between items-center p-4">
+        <BackButton />
+        <MainHeader />
+        <UserIcon/>
+      </div>
       <Header variant="sub" title="Create New Post" />
       <form onSubmit={createPost}>
         <div>

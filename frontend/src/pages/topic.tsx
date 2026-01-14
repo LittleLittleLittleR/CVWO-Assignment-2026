@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import Header, { MainHeader } from '../components/Header';
-import Button from '../components/Button';
+import Button, { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
+import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';
 
 import type { UserResponse } from '../../types/user';
@@ -19,6 +20,7 @@ export default function Topic() {
   const [topicUser, setTopicUser] = useState<UserResponse | null>(null);
   const [topic, setTopic] = useState<TopicResponse | null>(null);
   const [posts, setPosts] = useState<Array<PostResponse>>([]);
+  const [deleteActive, setDeleteActive] = useState<Boolean>(false);
 
   const fetchTopicDetails = async () => {
     try {
@@ -49,7 +51,7 @@ export default function Topic() {
       await setTopicUser(userJson);
 
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Error fetching topic details:', error);
     }
   };
 
@@ -60,6 +62,7 @@ export default function Topic() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex justify-between items-center p-4">
+        <BackButton />
         <MainHeader />
         {user ? 
         <UserIcon/>: 
@@ -69,21 +72,25 @@ export default function Topic() {
       </div>
       <main className="flex-1">
         <div>
-          <Header variant="sub" title={`${topic?.topic_name} by ${topicUser?.username}`} />
+          <Header variant="sub" title={`${topicUser?.username} | ${topic?.topic_name}`} />
           {topic?.user_id === user?.id && (
-          <Link to={`/updateTopics/${topicid}`}>
-            <Button variant="secondary" value="Update Topic"/>
-          </Link>
-          )}
-          {user && (
-          <Link to={`/addPosts/${topicid}`}>
-            <Button variant="secondary" value="Add Post"/>
-          </Link>
+          <>
+            <Link to={`/updateTopics/${topicid}`}>
+              <Button variant="secondary" value="Update Topic"/>
+            </Link>
+            <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(true)}/>
+          </>
           )}
         </div>
         <p>
           {topic?.topic_description}
         </p>
+        <Header variant="sub" title="Posts" />
+        {user && (
+        <Link to={`/addPosts/${topicid}`}>
+          <Button variant="secondary" value="Create Post"/>
+        </Link>
+        )}
         <div>
           <ul>
             {posts.map((post) => (
@@ -98,6 +105,7 @@ export default function Topic() {
             ))}
           </ul>
         </div>
+        {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} />)}
       </main>
     </div>
   );

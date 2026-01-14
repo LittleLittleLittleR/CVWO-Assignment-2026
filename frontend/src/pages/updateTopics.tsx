@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import Header from '../components/Header';
+import Header, { MainHeader } from '../components/Header';
+import UserIcon from '../components/UserIcon';
+import { BackButton } from '../components/Button';
 
 export default function UpdateTopics() {
   const navigate = useNavigate();
@@ -58,6 +60,11 @@ export default function UpdateTopics() {
 
   return (
     <div>
+      <div className="flex justify-between items-center p-4">
+        <BackButton />
+        <MainHeader />
+        <UserIcon/>
+      </div>
       <Header variant="sub" title="Update Topic" />
       <form onSubmit={updateTopic}>
         <div>

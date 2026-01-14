@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from '../components/Header';
+import Header, { MainHeader } from '../components/Header';
 import { useAuth } from '../Auth';
+import { BackButton } from '../components/Button';
+import UserIcon from '../components/UserIcon';
 
 export default function AddTopics() {
   const navigate = useNavigate();
@@ -37,6 +39,11 @@ export default function AddTopics() {
 
   return (
     <div>
+      <div className="flex justify-between items-center p-4">
+        <BackButton />
+        <MainHeader />
+        <UserIcon/>
+      </div>
       <Header variant="sub" title="Create New Topic" />
       <form onSubmit={createTopic}>
         <div>
