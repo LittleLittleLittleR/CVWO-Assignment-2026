@@ -11,8 +11,6 @@ import (
 
 type TopicHandler struct {
 	TopicModel *models.TopicModel
-	PostModel *models.PostModel
-	CommentModel *models.CommentModel
 }
 
 func toTopicResponse(t []models.Topic) []types.TopicResponse {
@@ -114,16 +112,5 @@ func (h *TopicHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		writeError(topicErr, w) // Only the creator can delete the topic
 		return
 	}
-
-	postErr := h.PostModel.DeleteByTopicID(ctx, id)
-	commentErr := h.CommentModel.DeleteByTopicID(ctx, id)
-	if postErr != nil {
-		writeError(postErr, w)
-		return
-	} else if commentErr != nil {
-		writeError(commentErr, w)
-		return
-	}
-
 	writeJSON(w, http.StatusOK, nil)
 }
