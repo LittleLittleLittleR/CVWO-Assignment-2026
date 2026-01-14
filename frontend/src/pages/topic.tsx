@@ -2,21 +2,29 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import Header, { MainHeader } from '../components/Header';
-import Button from '../components/Button';
+import Button, { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
+import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';
 
+import type { UserResponse } from '../../types/user';
 import type { TopicResponse } from '../../types/topic';
 import type { PostResponse } from '../../types/post';
 
 export default function Topic() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const { topicid } = useParams<{ topicid: string }>();
 
+  const [topicUser, setTopicUser] = useState<UserResponse | null>(null);
   const [topic, setTopic] = useState<TopicResponse | null>(null);
   const [posts, setPosts] = useState<Array<PostResponse>>([]);
+  const [deleteActive, setDeleteActive] = useState<Boolean>(false);
 
   const fetchTopicDetails = async () => {
     try {
@@ -32,14 +40,22 @@ export default function Topic() {
           'Content-Type': 'application/json',
         },
       });
-
-      const topicJson = await topicResponse.json();
+      const topicJson = (await topicResponse.json())[0];
       const postJson = await postResponse.json();
-      setTopic(topicJson[0]);
-      setPosts(postJson);
+      await setTopic(topicJson);
+      await setPosts(postJson);
+
+      const userResponse = await fetch(`${api_url}/users/id/${topicJson?.user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const userJson = (await userResponse.json())[0];
+      await setTopicUser(userJson);
 
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Error fetching topic details:', error);
     }
   };
 
@@ -50,24 +66,40 @@ export default function Topic() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex justify-between items-center p-4">
+        <BackButton />
         <MainHeader />
         {user ? 
         <UserIcon/>: 
-        <Link to="/login">
+        <Link to="/login" state={{ returnTo: `/topics/${topicid}` }}>
           <Button variant="primary" value="Log In" /> 
         </Link>}
       </div>
       <main className="flex-1">
-        <Header variant="sub" title={topic?.topic_name} />
-        <Link to={`/updateTopics/${topicid}`}>
-          <Button variant="secondary" value="Update Topic"/>
-        </Link>
         <div>
-          <Header variant="sub" title="Posts" />
+          <Header variant="sub" title={`${topicUser?.username} | ${topic?.topic_name}`} />
+          {topic?.user_id === user?.id && (
+          <>
+            <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
+              <Button variant="secondary" value="Update Topic"/>
+            </Link>
+            <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(!deleteActive)}/>
+          </>
+          )}
+        </div>
+        <p>
+          {topic?.topic_description}
+        </p>
+        <Header variant="sub" title="Posts" />
+        {user && (
+        <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
+          <Button variant="secondary" value="Create Post"/>
+        </Link>
+        )}
+        <div>
           <ul>
             {posts.map((post) => (
               <li key={post.id}>
-                <Link to={`/posts/${post.id}`}>
+                <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${topicid}` }}>
                   <h3>{post.title}</h3>
                   <p>{post.body}</p>
                   <p>{post.created_at}</p>
@@ -77,6 +109,7 @@ export default function Topic() {
             ))}
           </ul>
         </div>
+        {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} />)}
       </main>
     </div>
   );

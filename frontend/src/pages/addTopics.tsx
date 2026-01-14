@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import Header from '../components/Header';
+import Header, { MainHeader } from '../components/Header';
 import { useAuth } from '../Auth';
+import { BackButton } from '../components/Button';
+import UserIcon from '../components/UserIcon';
 
 export default function AddTopics() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.returnTo;
+  
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   const [newTopicName, setNewTopicName] = useState('');
   const [newTopicDescription, setNewTopicDescription] = useState('');
@@ -28,7 +37,9 @@ export default function AddTopics() {
         });
   
         const json = (await response.json())[0];
-        navigate(`/topics/${json.id}`);
+        navigate(`/topic/${json.id}`, {
+          state: { returnTo: returnTo ?? `/home` },
+        });
 
       } catch (error) {
         console.error('Error creating topic:', error);
@@ -37,6 +48,11 @@ export default function AddTopics() {
 
   return (
     <div>
+      <div className="flex justify-between items-center p-4">
+        <BackButton />
+        <MainHeader />
+        <UserIcon/>
+      </div>
       <Header variant="sub" title="Create New Topic" />
       <form onSubmit={createTopic}>
         <div>

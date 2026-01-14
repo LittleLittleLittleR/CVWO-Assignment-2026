@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import type { TopicResponse } from '../../types/topic';
 
 import Header, { MainHeader } from '../components/Header';
-import Button from '../components/Button';
+import Button, { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
 import { useAuth } from '../Auth';
 
@@ -42,10 +42,11 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex justify-between items-center p-4">
+        <BackButton />
         <MainHeader />
         {user ? 
         <UserIcon/>: 
-        <Link to="/login">
+        <Link to="/login" state={{ returnTo: `/home` }}>
           <Button variant="primary" value="Log In" /> 
         </Link>
         }
@@ -53,13 +54,13 @@ export default function Home() {
       <main className="flex-1">
         <div>
           <Header variant="sub" title="Topics" />
-          <Link to="/addTopics">
+          <Link to="/addTopics" state={{ returnTo: `/home` }}>
             <Button variant="secondary" value="Create Topic"/>
           </Link>
           <ul>
             {topics.map((topic) => (
                 <li key={topic.id}>
-                  <Link to={`/topics/${topic.id}`}>
+                  <Link to={`/topics/${topic.id}`} state={{ returnTo: `/home` }}>
                     <h3>{topic.topic_name}</h3>
                     <p>{topic.topic_description}</p>
                     <p>{topic.created_at}</p>
