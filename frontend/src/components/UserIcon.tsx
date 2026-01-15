@@ -19,18 +19,30 @@ export default function UserIcon() {
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-bold cursor-pointer border rounded-full p-2"
-      onClick={() => setDropdownOpen(!dropdownOpen)}
-      >
-        {user?.username}
-      </h2>
-      {dropdownOpen && (
-        <div className="absolute right-5 mt-1 w-30 bg-white border rounded-lg shadow-lg flex flex-col p-2">
-          <Button variant="dropdown" value="Profile" onClick={handleProfile}/>
+    <div className="relative w-32">
+    {dropdownOpen? (
+      <>
+        <h2
+        className="w-full h-10 text-lg font-semibold cursor-pointer rounded-t p-2 border-t border-l border-r overflow-hidden"
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+        ▲ {user?.username}
+        </h2>
+        <div className="absolute top-full left-0 w-full flex flex-col rounded-b border-b border-l border-r">
+          <Button variant="dropdown" value="Profile" onClick={handleProfile} />
           <Button variant="dropdown" value="Log Out" onClick={handleLogout} />
         </div>
-      )}
+      </>
+    ) : 
+    (
+      <h2
+      className="w-full h-10 text-lg font-bold cursor-pointer rounded p-2 border overflow-hidden"
+      onClick={() => setDropdownOpen(!dropdownOpen)}
+      >
+      ▼ {user?.username}
+      </h2>
+    )
+    }
     </div>
   );
-}
+}  
