@@ -5,8 +5,8 @@ import type { TopicResponse } from '../../types/topic';
 import type { PostResponse } from '../../types/post';
 import type { UserResponse } from '../../types/user';
 
-import Header, { MainHeader } from '../components/Header';
-import UserIcon from '../components/UserIcon';
+import NavBar from '../components/NavBar';
+import Header from '../components/Header';
 import Button from '../components/Button';
 import { useAuth } from '../Auth';
 
@@ -66,14 +66,7 @@ export default function User() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex justify-between items-center p-4">
-        <MainHeader />
-        {user ? 
-        <UserIcon/>: 
-        <Link to="/login">
-          <Button variant="primary" value="Log In" /> 
-        </Link>}
-      </div>
+      <NavBar />
       <main className="flex-1">
         <Header variant="sub" title={profileUser?.username} />
         <Button variant="secondary" value="Topics" onClick={() => setActiveTab('topics')} />

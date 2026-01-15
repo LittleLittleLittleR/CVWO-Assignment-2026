@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import Header, { MainHeader } from '../components/Header';
 import Button, { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
+import ListDisplay from '../components/ListDisplay';
 import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';
 
@@ -64,7 +65,7 @@ export default function Topic() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       <div className="flex justify-between items-center p-4">
         <BackButton />
         <MainHeader />
@@ -74,7 +75,7 @@ export default function Topic() {
           <Button variant="primary" value="Log In" /> 
         </Link>}
       </div>
-      <main className="flex-1">
+      <main className="">
         <div>
           <Header variant="sub" title={`${topicUser?.username} | ${topic?.topic_name}`} />
           {topic?.user_id === user?.id && (
@@ -95,20 +96,7 @@ export default function Topic() {
           <Button variant="secondary" value="Create Post"/>
         </Link>
         )}
-        <div>
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id}>
-                <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${topicid}` }}>
-                  <h3>{post.title}</h3>
-                  <p>{post.body}</p>
-                  <p>{post.created_at}</p>
-                </Link>
-                
-              </li>
-            ))}
-          </ul>
-        </div>
+          <ListDisplay item_list={posts} item_type="post" />
         {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} />)}
       </main>
     </div>
