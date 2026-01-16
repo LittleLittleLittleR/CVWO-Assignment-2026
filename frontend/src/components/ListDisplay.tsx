@@ -9,7 +9,21 @@ type ListProps = {
 };
 
 export default function ListDisplay({ item_list, item_type}: ListProps) {
+  
   const { user, loading } = useAuth();
+
+  function formatDate(created_at: string) {
+    const date = new Date(created_at);
+  
+    const datePart = date.toLocaleDateString("en-UK");
+    const timePart = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  
+    return `${datePart} | ${timePart}`;
+  }
 
   if (loading) {
     return null;
@@ -20,12 +34,15 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
     return (
         <ul className="list-none p-0">
           {topic_list.map((topic) => (
-              <li className={`p-0 border mb-2 p-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
+              <li className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
                 <Link to={`/topics/${topic.id}`} state={{ returnTo: `/home` }}>
-                  <h3 className="font-semibold text-lg">{topic.topic_name}</h3>
-                  <p>{topic.topic_description}</p>
-                  <p>{topic.created_at}</p>
+                  <div className="flex flex-row justify-between">
+                    <h3 className="font-semibold text-lg">{topic.topic_name}</h3>
+                    <p>{formatDate(topic.created_at)}</p>
+                  </div>
                 </Link>
+                <p>{topic.topic_description}</p>
+                
               </li>
           ))}
         </ul>
@@ -35,10 +52,12 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
     return (
         <ul className="list-none p-0">
           {post_list.map((post) => (
-              <li className={`p-0 border mb-2 p-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
+              <li className={`border mb-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
                 <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${post.topic_id}` }}>
-                  <h3 className="font-semibold text-lg">{post.title}</h3>
-                  <p>{post.created_at}</p>
+                  <div className="flex flex-row justify-between">
+                    <h3 className="font-semibold text-lg">{post.title}</h3>
+                    <p>{formatDate(post.created_at)}</p>
+                  </div>
                 </Link>
               </li>
           ))}

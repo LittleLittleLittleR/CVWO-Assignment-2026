@@ -13,7 +13,7 @@ export default function NavBar() {
   }
 
   return (
-    <div className="flex justify-between items-center p-4">
+    <div className="flex justify-between items-center pt-4 pb-6">
       <BackButton />
       <MainHeader />
       {user ? 
