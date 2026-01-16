@@ -18,10 +18,7 @@ import (
 
 func main() {
 	//env
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("No .env file found, using system environment variables")
-	}
+	godotenv.Load()
 
 	//db
 	db_url := os.Getenv("DATABASE_URL")
@@ -119,6 +116,7 @@ func main() {
 		Addr: addr,
 		Handler: handlerWithCORS,
 	}
+	log.Printf("server listening on port %s", port)
 
 	//shutdown
 	go func() {
