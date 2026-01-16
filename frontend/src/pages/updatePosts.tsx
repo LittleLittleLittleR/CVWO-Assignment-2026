@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Header, { MainHeader } from '../components/Header';
-import Button, { BackButton } from '../components/Button';
+import { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
+import InputField from '../components/InputField';
 
 export default function UpdatePost() {
   const navigate = useNavigate();
@@ -69,13 +70,13 @@ export default function UpdatePost() {
       <form onSubmit={updatePost}>
         <div>
           <label htmlFor="postTitle">Post Title</label>
-          <input type="text" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
+          <InputField variant="text" value={postTitle} onChange={setPostTitle} />
         </div>
         <div>
           <label htmlFor="postBody">Post Body</label>
-          <textarea value={postBody} onChange={(e) => setPostBody(e.target.value)} />
+          <InputField variant="textarea" value={postBody} onChange={setPostBody} />
         </div>
-        <input type="submit" value="Update Post" />
+        <InputField variant="submit" value="Update Post" />
       </form>
     </div>
   );

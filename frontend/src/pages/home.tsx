@@ -6,6 +6,7 @@ import type { TopicResponse } from '../../types/topic';
 import Header, { MainHeader } from '../components/Header';
 import Button, { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
+import ListDisplay from '../components/ListDisplay';
 import { useAuth } from '../Auth';
 
 export default function Home() {
@@ -51,23 +52,15 @@ export default function Home() {
         </Link>
         }
       </div>
-      <main className="flex-1">
+      <main className="">
         <div>
           <Header variant="sub" title="Topics" />
+          { user &&
           <Link to="/addTopics" state={{ returnTo: `/home` }}>
             <Button variant="secondary" value="Create Topic"/>
           </Link>
-          <ul>
-            {topics.map((topic) => (
-                <li key={topic.id}>
-                  <Link to={`/topics/${topic.id}`} state={{ returnTo: `/home` }}>
-                    <h3>{topic.topic_name}</h3>
-                    <p>{topic.topic_description}</p>
-                    <p>{topic.created_at}</p>
-                  </Link>
-                </li>
-            ))}
-          </ul>
+          }
+          <ListDisplay item_list={topics} item_type="topic" />
         </div>
       </main>
     </div>

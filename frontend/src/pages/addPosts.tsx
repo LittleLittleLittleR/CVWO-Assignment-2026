@@ -5,6 +5,7 @@ import Header, { MainHeader } from '../components/Header';
 import { BackButton } from '../components/Button';
 import { useAuth } from '../Auth';
 import UserIcon from '../components/UserIcon';
+import InputField from '../components/InputField';
 
 export default function AddPosts() {
   const navigate = useNavigate();
@@ -61,13 +62,13 @@ export default function AddPosts() {
       <form onSubmit={createPost}>
         <div>
           <label htmlFor="postTitle">Post Title</label>
-          <input type="text" value={newPostTitle} onChange={(e) => setNewPostTitle(e.target.value)} />
+          <InputField variant="text" value={newPostTitle} onChange={setNewPostTitle} />
         </div>
         <div>
           <label htmlFor="postBody">Post Body</label>
-          <textarea value={newPostBody} onChange={(e) => setNewPostBody(e.target.value)} />
+          <InputField variant="textarea" value={newPostBody} onChange={setNewPostBody} />
         </div>
-        <input type="submit" value="Create Post" />
+        <InputField variant="submit" value="Create Post" />
       </form>
     </div>
   );

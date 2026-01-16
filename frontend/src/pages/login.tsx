@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { MainHeader } from '../components/Header';
 import Button from "../components/Button";
 import { useAuth } from "../Auth";
+import NavBar from "../components/NavBar";
 
 export default function Login() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -57,9 +57,7 @@ export default function Login() {
 
   return (
     <div>
-      <div className="flex justify-left items-center p-4">
-        <MainHeader/>
-      </div>
+      <NavBar />
       <div>
         <div className="mb-4">
           <Button variant="square" value="Log In" onClick={() => setMode("login")} />
