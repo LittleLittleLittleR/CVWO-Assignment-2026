@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header, { MainHeader } from '../components/Header';
 import UserIcon from '../components/UserIcon';
 import { BackButton } from '../components/Button';
+import InputField from '../components/InputField';
 
 export default function UpdateTopics() {
   const navigate = useNavigate();
@@ -69,13 +70,13 @@ export default function UpdateTopics() {
       <form onSubmit={updateTopic}>
         <div>
           <label htmlFor="topicName">Topic Name</label>
-          <input type="text" value={topicName} onChange={(e) => setTopicName(e.target.value)} />
+          <InputField variant="text" value={topicName} onChange={setTopicName} />
         </div>
         <div>
           <label htmlFor="topicDescription">Topic Description</label>
-          <textarea value={topicDescription} onChange={(e) => setTopicDescription(e.target.value)} />
+          <InputField variant="textarea" value={topicDescription} onChange={setTopicDescription} />
         </div>
-        <input type="submit" value="Update Topic" />
+        <InputField variant="submit" value="Update Topic" />
       </form>
     </div>
   );

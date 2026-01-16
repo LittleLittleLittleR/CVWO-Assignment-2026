@@ -5,6 +5,7 @@ import Header, { MainHeader } from '../components/Header';
 import { useAuth } from '../Auth';
 import { BackButton } from '../components/Button';
 import UserIcon from '../components/UserIcon';
+import InputField from '../components/InputField';
 
 export default function AddTopics() {
   const navigate = useNavigate();
@@ -57,13 +58,13 @@ export default function AddTopics() {
       <form onSubmit={createTopic}>
         <div>
           <label htmlFor="topicName">Topic Name</label>
-          <input type="text" value={newTopicName} onChange={(e) => setNewTopicName(e.target.value)} />
+          <InputField variant="text" value={newTopicName} onChange={setNewTopicName} />
         </div>
         <div>
           <label htmlFor="topicDescription">Topic Description</label>
-          <textarea value={newTopicDescription} onChange={(e) => setNewTopicDescription(e.target.value)} />
+          <InputField variant="textarea" value={newTopicDescription} onChange={setNewTopicDescription} />
         </div>
-        <input type="submit" value="Create Topic" />
+        <InputField variant="submit" value="Create Topic" />
       </form>
     </div>
   );
