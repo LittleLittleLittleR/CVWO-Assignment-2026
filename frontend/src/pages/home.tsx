@@ -55,9 +55,11 @@ export default function Home() {
       <main className="">
         <div>
           <Header variant="sub" title="Topics" />
+          { user &&
           <Link to="/addTopics" state={{ returnTo: `/home` }}>
             <Button variant="secondary" value="Create Topic"/>
           </Link>
+          }
           <ListDisplay item_list={topics} item_type="topic" />
         </div>
       </main>

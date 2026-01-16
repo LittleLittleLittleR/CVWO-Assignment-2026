@@ -20,7 +20,7 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
     return (
         <ul className="list-none p-0">
           {topic_list.map((topic) => (
-              <li className={`p-0 border mb-2 p-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : ``}`}>
+              <li className={`p-0 border mb-2 p-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
                 <Link to={`/topics/${topic.id}`} state={{ returnTo: `/home` }}>
                   <h3 className="font-semibold text-lg">{topic.topic_name}</h3>
                   <p>{topic.topic_description}</p>
@@ -35,7 +35,7 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
     return (
         <ul className="list-none p-0">
           {post_list.map((post) => (
-              <li className={`p-0 border mb-2 p-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : ``}`}>
+              <li className={`p-0 border mb-2 p-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
                 <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${post.topic_id}` }}>
                   <h3 className="font-semibold text-lg">{post.title}</h3>
                   <p>{post.created_at}</p>

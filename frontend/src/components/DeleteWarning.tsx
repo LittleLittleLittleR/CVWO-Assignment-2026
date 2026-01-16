@@ -36,7 +36,7 @@ export default function DeleteWarning({ item_id, item_name, item_type }: DeleteW
       <p><strong>{item_name}</strong></p>
       <p>This action cannot be undone.</p>
       <div>
-        <Button variant="primary" value="Delete" onClick={deleteItem} />
+        <Button variant="alert" value="Delete" onClick={deleteItem} />
       </div>
     </div>
   );

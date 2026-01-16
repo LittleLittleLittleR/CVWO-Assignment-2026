@@ -23,12 +23,12 @@ export default function UserIcon() {
     {dropdownOpen? (
       <>
         <h2
-        className="w-full h-10 text-lg font-semibold cursor-pointer rounded-t p-2 border-t border-l border-r overflow-hidden"
+        className="w-full h-10 bg-white text-lg font-semibold cursor-pointer rounded-t p-2 border-t border-l border-r overflow-hidden"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         >
         ▲ {user?.username}
         </h2>
-        <div className="absolute top-full left-0 w-full flex flex-col rounded-b border-b border-l border-r">
+        <div className="absolute top-full left-0 w-full flex flex-col bg-white rounded-b border-b border-l border-r">
           <Button variant="dropdown" value="Profile" onClick={handleProfile} />
           <Button variant="dropdown" value="Log Out" onClick={handleLogout} />
         </div>
@@ -36,7 +36,7 @@ export default function UserIcon() {
     ) : 
     (
       <h2
-      className="w-full h-10 text-lg font-bold cursor-pointer rounded p-2 border overflow-hidden"
+      className="w-full h-10 bg-white text-lg font-bold cursor-pointer rounded p-2 border overflow-hidden"
       onClick={() => setDropdownOpen(!dropdownOpen)}
       >
       ▼ {user?.username}
