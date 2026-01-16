@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuth } from "../Auth";
 import NavBar from "../components/NavBar";
+import InputField from "../components/InputField";
 
 export default function Login() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -20,7 +21,6 @@ export default function Login() {
 
   const getByUsername = (action: "login" | "signup") => async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       let response;
       if (action === "login") {
@@ -42,53 +42,62 @@ export default function Login() {
 
       const json = await response.json();
 
-      if (!json || json.length === 0) {
-        throw new Error("User not found");
+      if (json.error || json.length === 0) {
+        throw new Error;
       }
 
       setUser(json[0]);
       navigate("/home");
 
     } catch (error) {
-      console.error('Error fetching user:', error);
-      setError(`User ${username} not found.`);
+      if (username.trim() === "") {
+        setError("Username cannot be empty.");
+        return;
+      } else if (action === "signup") {
+        setError(`Invalid username. Please try a different one.`);
+        return;
+      } else if (action === "login") {
+        setError(`User ${username} not found.`);
+      }
     }
   };
 
   return (
     <div>
       <NavBar />
-      <div>
-        <div className="mb-4">
-          <Button variant="square" value="Log In" onClick={() => setMode("login")} />
-          <Button variant="square" value="Sign Up" onClick={() => setMode("signup")} />
+      <div className="w-1/3 mx-auto border rounded-lg mt-20 bg-white text-center pb-4">
+        <div className="w-full">
+          <Button 
+          variant="square" 
+          value="Log In" 
+          onClick={() => {setMode("login"); setError("")}} 
+          className={`w-1/2 rounded-tl-lg ${mode === "login" ? "bg-gray-500 text-white" : ""}`} />
+          <Button 
+          variant="square" 
+          value="Sign Up" 
+          onClick={() => {setMode("signup"); setError("")}} 
+          className={`w-1/2 rounded-tr-lg ${mode === "signup" ? "bg-gray-500 text-white" : ""}`} />
         </div>
-        <div>
           {mode === "login" ? (
-            <form onSubmit={getByUsername("login")}>
-              <div>
-                <label>Username</label>
-                <input 
-                  type="text" 
+            <form onSubmit={getByUsername("login")} className="h-full flex flex-col gap-4 p-4">
+                <label>Log in with an existing username</label>
+                <InputField 
+                  variant="text" 
                   value={username} 
-                  onChange={(e) => setUsername(e.target.value)} />
-              </div>
-              <input type="submit" value="Log In" />
+                  onChange={setUsername} />
+              <InputField variant="submit" value="Log In" />
             </form>
           ) : (
-            <form onSubmit={getByUsername("signup")}>
-              <div>
-                <label>Username</label>
-                <input 
-                  type="text" 
+            <form onSubmit={getByUsername("signup")} className="h-full flex flex-col gap-4 p-4">
+                <label>Sign up with a new username</label>
+                <InputField 
+                  variant="text" 
                   value={username} 
-                  onChange={(e) => setUsername(e.target.value)} />
-              </div>
-              <input type="submit" value="Sign Up" />
+                  onChange={setUsername} />
+              <InputField variant="submit" value="Sign Up" />
             </form>
-          )}
-        </div>    
-        {error && <p className="text-red-500">{error}</p>}      
+          )}   
+        {error? <p className="text-red-500">{error}</p> : <p></p>}     
       </div>
     </div>
   );
