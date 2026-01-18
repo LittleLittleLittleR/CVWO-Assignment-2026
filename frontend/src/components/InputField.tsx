@@ -1,5 +1,3 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 type InputFieldProps = {
   variant: "text" | "textarea" | "submit";

@@ -50,7 +50,7 @@ export default function Button({ variant, value, onClick, className }: ButtonPro
   } else if (variant === "alert") {
     return (
       <button 
-      className={`cursor-pointer bg-red-500 hover:bg-red-700 hover:border-black text-white py-2 px-4 rounded ${className}`} 
+      className={`cursor-pointer bg-white border-2 text-red-500 hover:bg-red-500 hover:text-white py-2 px-4 rounded ${className}`} 
       onClick={onClick}>
         {value}
       </button>

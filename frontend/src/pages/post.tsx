@@ -65,7 +65,7 @@ export default function Post() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       <NavBar variant="other"/>
       <div className='flex flex-row '>
         <Header variant="sub" title={`${postUser?.username}/${post?.title}`} />
@@ -103,7 +103,7 @@ export default function Post() {
           ))}
         </ul>
       </div>
-      {deleteActive && (<DeleteWarning item_type="post" item_id={post?.id} item_name={post?.title} />)}
+      {deleteActive && (<DeleteWarning item_type="post" item_id={post?.id} item_name={post?.title} closeDelete={() => setDeleteActive(false)} />)}
     </div>
   );
 }
