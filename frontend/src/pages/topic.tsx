@@ -11,6 +11,7 @@ import { useAuth } from '../Auth';
 import type { UserResponse } from '../../types/user';
 import type { TopicResponse } from '../../types/topic';
 import type { PostResponse } from '../../types/post';
+import NavBar from '../components/NavBar';
 
 export default function Topic() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -66,39 +67,37 @@ export default function Topic() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between items-center p-4">
-        <BackButton />
-        <MainHeader />
-        {user ? 
-        <UserIcon/>: 
-        <Link to="/login" state={{ returnTo: `/topics/${topicid}` }}>
-          <Button variant="primary" value="Log In" /> 
-        </Link>}
-      </div>
-      <main className="">
-        <div>
-          <Header variant="sub" title={`${topicUser?.username} | ${topic?.topic_name}`} />
+      <NavBar variant="other"/>
+        <div className='flex flex-row '>
+          <Header variant="sub" title={`${topicUser?.username}/${topic?.topic_name}`} />
           {topic?.user_id === user?.id && (
+            <>
+              <Header variant="sub" title="|" className="mx-4" />
+              <div  className="flex gap-4">
+                <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
+                  <Button variant="secondary" value="Update Topic"/>
+                </Link>
+                <Button variant="secondary" value="Delete Topic" onClick={() => setDeleteActive(!deleteActive)}/>
+              </div>
+            </>
+          )}
+        </div>
+        <p className="my-4 border px-3 py-2 rounded-lg bg-white">
+          {topic?.topic_description}
+        </p>
+        <div className='flex flex-row'>
+          <Header variant="sub" title="Posts" />
+          {user && (
           <>
-            <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
-              <Button variant="secondary" value="Update Topic"/>
+            <Header variant="sub" title="|" className="mx-4" />
+            <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
+              <Button variant="secondary" value="Create Post"/>
             </Link>
-            <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(!deleteActive)}/>
           </>
           )}
         </div>
-        <p>
-          {topic?.topic_description}
-        </p>
-        <Header variant="sub" title="Posts" />
-        {user && (
-        <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
-          <Button variant="secondary" value="Create Post"/>
-        </Link>
-        )}
           <ListDisplay item_list={posts} item_type="post" />
         {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} />)}
-      </main>
     </div>
   );
 }

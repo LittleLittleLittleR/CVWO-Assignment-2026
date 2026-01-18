@@ -44,11 +44,11 @@ export default function Home() {
     <div className="flex flex-col">
       <NavBar variant="home"/>
       <div>
-        <div className='flex flex-row '>
-          <Header variant="sub" title="Topics" className="mr-4" />
+        <div className='flex flex-row'>
+          <Header variant="sub" title="Topics"/>
           { user &&
           <>
-            <Header variant="sub" title="|" className="mr-4" />
+            <Header variant="sub" title="|" className="mx-4" />
             <Link to="/addTopics" state={{ returnTo: `/home` }}>
               <Button variant="secondary" value="Create Topic"/>
             </Link>

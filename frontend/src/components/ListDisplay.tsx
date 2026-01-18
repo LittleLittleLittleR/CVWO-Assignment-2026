@@ -52,7 +52,7 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
         <ul className="list-none p-0">
           {post_list.map((post) => (
             <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${post.topic_id}` }}>
-              <li className={`border mb-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
+              <li className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{post.title}</h3>
                     <p>{formatDate(post.created_at)}</p>
