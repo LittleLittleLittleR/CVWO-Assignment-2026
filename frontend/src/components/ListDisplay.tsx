@@ -6,9 +6,10 @@ import type { PostResponse } from "../../types/post";
 type ListProps = {
   item_list: Array<TopicResponse> | Array<PostResponse>;
   item_type: 'topic' | 'post' | 'comment';
+  curLocation?: string;
 };
 
-export default function ListDisplay({ item_list, item_type}: ListProps) {
+export default function ListDisplay({ item_list, item_type, curLocation}: ListProps) {
   
   const { user, loading } = useAuth();
 
@@ -34,7 +35,7 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
     return (
         <ul className="list-none p-0">
           {topic_list.map((topic) => (
-            <Link to={`/topics/${topic.id}`} state={{ returnTo: `/home` }}>
+            <Link to={`/topics/${topic.id}`} state={{ returnTo: curLocation || `/home` }}>
               <li className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{topic.topic_name}</h3>
@@ -51,7 +52,7 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
     return (
         <ul className="list-none p-0">
           {post_list.map((post) => (
-            <Link to={`/posts/${post.id}`} state={{ returnTo: `/topics/${post.topic_id}` }}>
+            <Link to={`/posts/${post.id}`} state={{ returnTo: curLocation || `/topics/${post.topic_id}` }}>
               <li className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{post.title}</h3>

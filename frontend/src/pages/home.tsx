@@ -55,7 +55,7 @@ export default function Home() {
           </>
           }
         </div>
-        <ListDisplay item_list={topics} item_type="topic" />
+        <ListDisplay item_list={topics} item_type="topic" curLocation={`/home`} />
       </div>
     </div>
   );

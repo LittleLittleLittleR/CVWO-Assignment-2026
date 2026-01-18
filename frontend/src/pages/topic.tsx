@@ -95,7 +95,7 @@ export default function Topic() {
         </>
         )}
       </div>
-      <ListDisplay item_list={posts} item_type="post" />
+      <ListDisplay item_list={posts} item_type="post" curLocation={`/topics/${topicid}`} />
       {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} closeDelete={() => setDeleteActive(false)}/>)}
     </div>
   );

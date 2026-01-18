@@ -9,6 +9,7 @@ import NavBar from '../components/NavBar';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import { useAuth } from '../Auth';
+import ListDisplay from '../components/ListDisplay';
 
 export default function User() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -65,42 +66,22 @@ export default function User() {
 }, [username]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <NavBar />
-      <main className="flex-1">
+    <div className="flex flex-col">
+      <NavBar variant="other"/>
+      <div className='flex flex-row '>
         <Header variant="sub" title={profileUser?.username} />
-        <Button variant="secondary" value="Topics" onClick={() => setActiveTab('topics')} />
-        <Button variant="secondary" value="Posts" onClick={() => setActiveTab('posts')} />
+        <Header variant="sub" title="|" className="mx-4" />
+        <div  className="flex gap-4">
+          <Button variant="secondary" value="Topics" onClick={() => setActiveTab('topics')} />
+          <Button variant="secondary" value="Posts" onClick={() => setActiveTab('posts')} />
+        </div>
+      </div>
         {activeTab === 'topics' && <div>
-          <Link to="/addTopics">
-            <Button variant="secondary" value="Create Topic"/>
-          </Link>
-          <ul>
-            {profileTopics.map((topic) => (
-              <li key={topic.id}>
-                <Link to={`/topics/${topic.id}`}>
-                  <h3>{topic.topic_name}</h3>
-                  <p>{topic.topic_description}</p>
-                  <p>{topic.created_at}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <ListDisplay item_list={profileTopics} item_type="topic" curLocation={`/users/${username}`} />
         </div>}
         {activeTab === 'posts' && <div>
-          <ul>
-            {profilePosts.map((post) => (
-              <li key={post.id}>
-                <Link to={`/posts/${post.id}`}>
-                  <h3>{post.title}</h3>
-                  <p>{post.body}</p>
-                  <p>{post.created_at}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <ListDisplay item_list={profilePosts} item_type="post" curLocation={`/users/${username}`} />
         </div>}
-      </main>
     </div>
   );
 }
