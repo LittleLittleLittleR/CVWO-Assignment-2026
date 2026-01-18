@@ -5,7 +5,7 @@ import type { PostResponse } from "../../types/post";
 
 type ListProps = {
   item_list: Array<TopicResponse> | Array<PostResponse>;
-  item_type: 'topic' | 'post';
+  item_type: 'topic' | 'post' | 'comment';
 };
 
 export default function ListDisplay({ item_list, item_type}: ListProps) {
@@ -46,7 +46,7 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
           ))}
         </ul>
     );
-  } else {
+  } else if (item_type === "post") {
     const post_list: Array<PostResponse> = item_list as Array<PostResponse>;
     return (
         <ul className="list-none p-0">
@@ -62,5 +62,8 @@ export default function ListDisplay({ item_list, item_type}: ListProps) {
           ))}
         </ul>
     );
+  } else if (item_type === "comment") {
+    // Comments are not displayed in a list format currently
+    return null;
   }
 }

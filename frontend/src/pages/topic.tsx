@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import Header, { MainHeader } from '../components/Header';
-import Button, { BackButton } from '../components/Button';
-import UserIcon from '../components/UserIcon';
+import Header from '../components/Header';
+import Button from '../components/Button';
 import ListDisplay from '../components/ListDisplay';
 import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';
@@ -68,36 +67,36 @@ export default function Topic() {
   return (
     <div className="flex flex-col">
       <NavBar variant="other"/>
-        <div className='flex flex-row '>
-          <Header variant="sub" title={`${topicUser?.username}/${topic?.topic_name}`} />
-          {topic?.user_id === user?.id && (
-            <>
-              <Header variant="sub" title="|" className="mx-4" />
-              <div  className="flex gap-4">
-                <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
-                  <Button variant="secondary" value="Update Topic"/>
-                </Link>
-                <Button variant="secondary" value="Delete Topic" onClick={() => setDeleteActive(!deleteActive)}/>
-              </div>
-            </>
-          )}
-        </div>
-        <p className="my-4 border px-3 py-2 rounded-lg bg-white">
-          {topic?.topic_description}
-        </p>
-        <div className='flex flex-row'>
-          <Header variant="sub" title="Posts" />
-          {user && (
+      <div className='flex flex-row '>
+        <Header variant="sub" title={`${topicUser?.username}/${topic?.topic_name}`} />
+        {topic?.user_id === user?.id && (
           <>
             <Header variant="sub" title="|" className="mx-4" />
-            <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
-              <Button variant="secondary" value="Create Post"/>
-            </Link>
+            <div  className="flex gap-4">
+              <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
+                <Button variant="secondary" value="Update Topic"/>
+              </Link>
+              <Button variant="secondary" value="Delete Topic" onClick={() => setDeleteActive(!deleteActive)}/>
+            </div>
           </>
-          )}
-        </div>
-          <ListDisplay item_list={posts} item_type="post" />
-        {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} />)}
+        )}
+      </div>
+      <p className="my-4 border-2 px-3 py-2 rounded-lg bg-white">
+        {topic?.topic_description}
+      </p>
+      <div className='flex flex-row'>
+        <Header variant="sub" title="Posts" />
+        {user && (
+        <>
+          <Header variant="sub" title="|" className="mx-4" />
+          <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
+            <Button variant="secondary" value="Create Post"/>
+          </Link>
+        </>
+        )}
+      </div>
+      <ListDisplay item_list={posts} item_type="post" />
+      {deleteActive && (<DeleteWarning item_type="topic" item_id={topic?.id} item_name={topic?.topic_name} />)}
     </div>
   );
 }
