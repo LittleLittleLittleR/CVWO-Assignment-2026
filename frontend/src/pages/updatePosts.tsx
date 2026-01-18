@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import Header, { MainHeader } from '../components/Header';
-import { BackButton } from '../components/Button';
-import UserIcon from '../components/UserIcon';
+import Header from '../components/Header';
 import InputField from '../components/InputField';
+import NavBar from '../components/NavBar';
 
 export default function UpdatePost() {
   const navigate = useNavigate();
@@ -61,19 +60,15 @@ export default function UpdatePost() {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4">
-        <BackButton />
-        <MainHeader />
-        <UserIcon/>
-      </div>
+      <NavBar variant="other" />
       <Header variant="sub" title="Update Post" />
-      <form onSubmit={updatePost}>
+      <form className='flex flex-col gap-2' onSubmit={updatePost}>
         <div>
-          <label htmlFor="postTitle">Post Title</label>
+          <label>Post Title</label>
           <InputField variant="text" value={postTitle} onChange={setPostTitle} />
         </div>
         <div>
-          <label htmlFor="postBody">Post Body</label>
+          <label>Post Body</label>
           <InputField variant="textarea" value={postBody} onChange={setPostBody} />
         </div>
         <InputField variant="submit" value="Update Post" />

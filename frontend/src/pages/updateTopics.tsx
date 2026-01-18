@@ -5,6 +5,7 @@ import Header, { MainHeader } from '../components/Header';
 import UserIcon from '../components/UserIcon';
 import { BackButton } from '../components/Button';
 import InputField from '../components/InputField';
+import NavBar from '../components/NavBar';
 
 export default function UpdateTopics() {
   const navigate = useNavigate();
@@ -61,19 +62,15 @@ export default function UpdateTopics() {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4">
-        <BackButton />
-        <MainHeader />
-        <UserIcon/>
-      </div>
+      <NavBar variant="other" />
       <Header variant="sub" title="Update Topic" />
-      <form onSubmit={updateTopic}>
+      <form className='flex flex-col gap-2' onSubmit={updateTopic}>
         <div>
-          <label htmlFor="topicName">Topic Name</label>
+          <label>Topic Name</label>
           <InputField variant="text" value={topicName} onChange={setTopicName} />
         </div>
         <div>
-          <label htmlFor="topicDescription">Topic Description</label>
+          <label>Topic Description</label>
           <InputField variant="textarea" value={topicDescription} onChange={setTopicDescription} />
         </div>
         <InputField variant="submit" value="Update Topic" />
