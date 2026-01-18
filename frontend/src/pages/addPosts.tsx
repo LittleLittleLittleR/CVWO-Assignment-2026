@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import Header, { MainHeader } from '../components/Header';
-import { BackButton } from '../components/Button';
+import Header from '../components/Header';
 import { useAuth } from '../Auth';
-import UserIcon from '../components/UserIcon';
 import InputField from '../components/InputField';
+import NavBar from '../components/NavBar';
 
 export default function AddPosts() {
   const navigate = useNavigate();
@@ -53,19 +52,15 @@ export default function AddPosts() {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4">
-        <BackButton />
-        <MainHeader />
-        <UserIcon/>
-      </div>
+      <NavBar variant="other" />
       <Header variant="sub" title="Create New Post" />
-      <form onSubmit={createPost}>
+      <form className='flex flex-col gap-2' onSubmit={createPost}>
         <div>
-          <label htmlFor="postTitle">Post Title</label>
+          <label>Post Title</label>
           <InputField variant="text" value={newPostTitle} onChange={setNewPostTitle} />
         </div>
         <div>
-          <label htmlFor="postBody">Post Body</label>
+          <label>Post Body</label>
           <InputField variant="textarea" value={newPostBody} onChange={setNewPostBody} />
         </div>
         <InputField variant="submit" value="Create Post" />

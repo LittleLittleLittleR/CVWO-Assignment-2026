@@ -42,14 +42,17 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <NavBar />
+      <NavBar variant="home"/>
       <div>
         <div className='flex flex-row '>
           <Header variant="sub" title="Topics" className="mr-4" />
           { user &&
-          <Link to="/addTopics" state={{ returnTo: `/home` }}>
-            <Button variant="secondary" value="Create Topic"/>
-          </Link>
+          <>
+            <Header variant="sub" title="|" className="mr-4" />
+            <Link to="/addTopics" state={{ returnTo: `/home` }}>
+              <Button variant="secondary" value="Create Topic"/>
+            </Link>
+          </>
           }
         </div>
         <ListDisplay item_list={topics} item_type="topic" />
