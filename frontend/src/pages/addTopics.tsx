@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import Header, { MainHeader } from '../components/Header';
+import Header from '../components/Header';
 import { useAuth } from '../Auth';
-import { BackButton } from '../components/Button';
-import UserIcon from '../components/UserIcon';
 import InputField from '../components/InputField';
+import NavBar from '../components/NavBar';
 
 export default function AddTopics() {
   const navigate = useNavigate();
@@ -38,7 +37,7 @@ export default function AddTopics() {
         });
   
         const json = (await response.json())[0];
-        navigate(`/topic/${json.id}`, {
+        navigate(`/topics/${json.id}`, {
           state: { returnTo: returnTo ?? `/home` },
         });
 
@@ -49,19 +48,15 @@ export default function AddTopics() {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4">
-        <BackButton />
-        <MainHeader />
-        <UserIcon/>
-      </div>
+      <NavBar variant="other" />
       <Header variant="sub" title="Create New Topic" />
-      <form onSubmit={createTopic}>
+      <form className='flex flex-col gap-2' onSubmit={createTopic}>
         <div>
-          <label htmlFor="topicName">Topic Name</label>
+          <label>Topic Name</label>
           <InputField variant="text" value={newTopicName} onChange={setNewTopicName} />
         </div>
         <div>
-          <label htmlFor="topicDescription">Topic Description</label>
+          <label>Topic Description</label>
           <InputField variant="textarea" value={newTopicDescription} onChange={setNewTopicDescription} />
         </div>
         <InputField variant="submit" value="Create Topic" />

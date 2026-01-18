@@ -4,14 +4,15 @@ import type { JSX } from "react/jsx-dev-runtime";
 type HeaderProps = {
   variant: "main" | "sub";
   title: React.ReactNode;
+  className?: string;
 };
 
-export default function Header({ variant, title }: HeaderProps) {
+export default function Header({ variant, title, className }: HeaderProps) {
   if (variant === "main") {
-    return <h1 className="text-4xl font-bold">{title}</h1>;
+    return <h1 className={`text-4xl font-bold ${className}`}>{title}</h1>;
   }
 
-  return <h2 className="text-2xl font-bold">{title}</h2>;
+  return <h2 className={`text-2xl font-bold ${className}`}>{title}</h2>;
 }
 
 export function MainHeader() {

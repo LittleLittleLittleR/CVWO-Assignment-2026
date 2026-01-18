@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 import type { TopicResponse } from '../../types/topic';
 
-import Header, { MainHeader } from '../components/Header';
-import Button, { BackButton } from '../components/Button';
-import UserIcon from '../components/UserIcon';
+import Header from '../components/Header';
+import Button from '../components/Button';
 import ListDisplay from '../components/ListDisplay';
 import { useAuth } from '../Auth';
+import NavBar from '../components/NavBar';
 
 export default function Home() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -41,28 +41,22 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex justify-between items-center p-4">
-        <BackButton />
-        <MainHeader />
-        {user ? 
-        <UserIcon/>: 
-        <Link to="/login" state={{ returnTo: `/home` }}>
-          <Button variant="primary" value="Log In" /> 
-        </Link>
-        }
-      </div>
-      <main className="">
-        <div>
-          <Header variant="sub" title="Topics" />
+    <div className="flex flex-col">
+      <NavBar variant="home"/>
+      <div>
+        <div className='flex flex-row'>
+          <Header variant="sub" title="Topics"/>
           { user &&
-          <Link to="/addTopics" state={{ returnTo: `/home` }}>
-            <Button variant="secondary" value="Create Topic"/>
-          </Link>
+          <>
+            <Header variant="sub" title="|" className="mx-4" />
+            <Link to="/addTopics" state={{ returnTo: `/home` }}>
+              <Button variant="secondary" value="Create Topic"/>
+            </Link>
+          </>
           }
-          <ListDisplay item_list={topics} item_type="topic" />
         </div>
-      </main>
+        <ListDisplay item_list={topics} item_type="topic" curLocation={`/home`} />
+      </div>
     </div>
   );
 }
