@@ -10,6 +10,7 @@ import type { UserResponse } from '../../types/user';
 import type { PostResponse } from '../../types/post';
 import type { CommentResponse } from '../../types/comment';
 import NavBar from '../components/NavBar';
+import InputField from '../components/InputField';
 
 export default function Post() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -25,6 +26,7 @@ export default function Post() {
   const [post, setPost] = useState<PostResponse | null>(null);
   const [comments, setComments] = useState<Array<CommentResponse>>([]);
   const [deleteActive, setDeleteActive] = useState<Boolean>(false);
+  const [commentInput, setCommentInput] = useState<string>("");
 
   const fetchTopicDetails = async () => {
     try {
@@ -60,6 +62,32 @@ export default function Post() {
     }
   };
 
+  const addComment = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${api_url}/comments/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user?.id,
+          post_id: postid,
+          body: commentInput,
+        }),
+      });
+
+      if (response.ok) {
+        setCommentInput("");
+        fetchTopicDetails();
+      } else {
+        console.error('Error adding comment:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
+  };
+
   useEffect(() => {
     fetchTopicDetails();
   }, []);
@@ -84,15 +112,11 @@ export default function Post() {
       <p className="my-4 border-2 px-3 py-2 rounded-lg bg-white">
         {post?.body}
       </p>
-      <div className='flex flex-row'>
-        <Header variant="sub" title="Comments" />
-        {user && (
-          <>
-            <Header variant="sub" title="|" className="mx-4" />
-          <Button variant="secondary" value="Comment"/>
-          </>
-          )}
-      </div>
+      <Header variant="sub" title="Comments" />
+      <form className='flex flex-row gap-2' onSubmit={addComment}>
+        <InputField variant='text' value={commentInput} onChange={setCommentInput} placeholder="Join the discussion"/>
+        <InputField variant='submit' value='Comment'/>
+      </form>
       <div>
         <ul>
           {comments.map((comment) => (
