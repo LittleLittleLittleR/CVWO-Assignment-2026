@@ -12,6 +12,7 @@ import (
 type Comment struct {
 	ID string
 	UserID string
+	Username string
 	PostID string
 	ParentCommentID *string
 	Body string
@@ -24,8 +25,9 @@ type CommentModel struct {
 
 func (m *CommentModel) GetAll(ctx context.Context) ([]Comment, error) {
 	const query = `
-		SELECT id, user_id, post_id, parent_comment_id, body, created_at 
-		FROM comments
+		SELECT comments.id, comments.user_id, users.username, comments.post_id, 
+		comments.parent_comment_id, comments.body, comments.created_at 
+		FROM comments JOIN users ON comments.user_id = users.id
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
@@ -38,7 +40,7 @@ func (m *CommentModel) GetAll(ctx context.Context) ([]Comment, error) {
 
 	for rows.Next() {
 		var t Comment
-		if err := rows.Scan(&t.ID, &t.UserID, &t.PostID, &t.ParentCommentID, &t.Body, &t.CreatedAt); err != nil {
+		if err := rows.Scan(&t.ID, &t.UserID, &t.Username, &t.PostID, &t.ParentCommentID, &t.Body, &t.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get all comments: %w", err)
 		}
 		comments = append(comments, t)
@@ -54,14 +56,15 @@ func (m *CommentModel) GetByID(ctx context.Context, id string) ([]Comment, error
 	}
 
 	const query = `
-		SELECT id, user_id, post_id, parent_comment_id, body, created_at 
-		FROM comments 
-		WHERE id = $1
+		SELECT comments.id, comments.user_id, users.username, comments.post_id, 
+		comments.parent_comment_id, comments.body, comments.created_at 
+		FROM comments JOIN users ON comments.user_id = users.id
+		WHERE comments.id = $1
 	`
 
 	var c Comment
 	err = m.DB.QueryRowContext(ctx, query, id).
-		Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt)
+		Scan(&c.ID, &c.UserID, &c.Username, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -80,9 +83,10 @@ func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Commen
 	}
 	
 	const query = `
-		SELECT id, user_id, post_id, parent_comment_id, body, created_at 
-		FROM comments 
-		WHERE user_id = $1
+		SELECT comments.id, comments.user_id, users.username, comments.post_id, 
+		comments.parent_comment_id, comments.body, comments.created_at 
+		FROM comments JOIN users ON comments.user_id = users.id
+		WHERE comments.user_id = $1
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
@@ -98,7 +102,7 @@ func (m *CommentModel) GetByUserID(ctx context.Context, userID string) ([]Commen
 
 	for rows.Next() {
 		var c Comment
-		if err := rows.Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.UserID, &c.Username, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get comments by user id: %w", err)
 		}
 		comments = append(comments, c)
@@ -113,9 +117,10 @@ func (m *CommentModel) GetByPostID(ctx context.Context, postID string) ([]Commen
 		return nil, ErrInvalidPostID
 	}
 	const query = `
-		SELECT id, user_id, post_id, parent_comment_id, body, created_at 
-		FROM comments 
-		WHERE post_id = $1
+		SELECT comments.id, comments.user_id, users.username, comments.post_id, 
+		comments.parent_comment_id, comments.body, comments.created_at 
+		FROM comments JOIN users ON comments.user_id = users.id
+		WHERE comments.post_id = $1
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query, postID)
@@ -131,7 +136,7 @@ func (m *CommentModel) GetByPostID(ctx context.Context, postID string) ([]Commen
 
 	for rows.Next() {
 		var c Comment
-		if err := rows.Scan(&c.ID, &c.UserID, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.UserID, &c.Username, &c.PostID, &c.ParentCommentID, &c.Body, &c.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get comments by post id: %w", err)
 		}
 		comments = append(comments, c)
@@ -194,7 +199,7 @@ func (m *CommentModel) Delete(ctx context.Context, id string) error {
 
 	const query = `
 		DELETE FROM comments
-		WHERE id = $1
+		WHERE id = $1 OR parent_comment_id = $1
 		RETURNING id
 	`
 

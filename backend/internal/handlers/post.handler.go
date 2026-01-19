@@ -18,6 +18,7 @@ func toPostResponse(t []models.Post) []types.PostResponse {
 		responsePosts[i] = types.PostResponse{
 			ID: post.ID,
 			UserID: post.UserID,
+			Username: post.Username,
 			TopicID: post.TopicID,
 			Title: post.Title,
 			Body: post.Body,

@@ -16,6 +16,7 @@ type UpdateCommentRequest struct {
 type CommentResponse struct {
 	ID string `json:"id"`
 	UserID string `json:"user_id"`
+	Username string `json:"username"`
 	PostID string `json:"post_id"`
 	ParentCommentID *string `json:"parent_comment_id,omitempty"`
 	Body string `json:"body"`

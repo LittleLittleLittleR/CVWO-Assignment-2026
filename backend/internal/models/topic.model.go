@@ -12,6 +12,7 @@ import (
 type Topic struct {
 	ID string
 	UserID string
+	Username string
 	TopicName string
 	TopicDescription string
 	CreatedAt time.Time
@@ -23,8 +24,8 @@ type TopicModel struct {
 
 func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
 	const query = `
-		SELECT id, user_id, topic_name, topic_description, created_at 
-		FROM topics
+		SELECT topics.id, topics.user_id, users.username, topics.topic_name, topics.topic_description, topics.created_at 
+		FROM topics JOIN users ON topics.user_id = users.id
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
@@ -37,7 +38,7 @@ func (m *TopicModel) GetAll(ctx context.Context) ([]Topic, error) {
 
 	for rows.Next() {
 		var t Topic
-		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
+		if err := rows.Scan(&t.ID, &t.UserID, &t.Username, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get all topics: %w", err)
 		}
 		topics = append(topics, t)
@@ -53,14 +54,15 @@ func (m *TopicModel) GetByID(ctx context.Context, id string) ([]Topic, error) {
 	}
 
 	const query = `
-		SELECT id, user_id, topic_name, topic_description, created_at 
-		FROM topics 
-		WHERE id = $1
+		SELECT topics.id, topics.user_id, users.username, 
+		topics.topic_name, topics.topic_description, topics.created_at 
+		FROM topics JOIN users ON topics.user_id = users.id
+		WHERE topics.id = $1
 	`
 
 	var t Topic
 	err = m.DB.QueryRowContext(ctx, query, id).
-		Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt)
+		Scan(&t.ID, &t.UserID, &t.Username, &t.TopicName, &t.TopicDescription, &t.CreatedAt)
 
 	if err != nil {
 		// No rows found with the given id
@@ -80,9 +82,10 @@ func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, e
 	}
 
 	const query = `
-		SELECT id, user_id, topic_name, topic_description, created_at 
-		FROM topics 
-		WHERE user_id = $1
+		SELECT topics.id, topics.user_id, users.username, 
+		topics.topic_name, topics.topic_description, topics.created_at 
+		FROM topics JOIN users ON topics.user_id = users.id
+		WHERE topics.user_id = $1
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
@@ -98,7 +101,7 @@ func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, e
 
 	for rows.Next() {
 		var t Topic
-		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
+		if err := rows.Scan(&t.ID, &t.UserID, &t.Username, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get topics by user id: %w", err)
 		}
 		topics = append(topics, t)
@@ -109,9 +112,10 @@ func (m *TopicModel) GetByUserID(ctx context.Context, userID string) ([]Topic, e
 
 func (m *TopicModel) GetByTopicName(ctx context.Context, topicName string) ([]Topic, error) {
 	const query = `
-		SELECT id, user_id, topic_name, topic_description, created_at 
-		FROM topics 
-		WHERE topic_name = $1
+		SELECT topics.id, topics.user_id, users.username, 
+		topics.topic_name, topics.topic_description, topics.created_at 
+		FROM topics JOIN users ON topics.user_id = users.id
+		WHERE topics.topic_name = $1
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query, topicName)
@@ -127,7 +131,7 @@ func (m *TopicModel) GetByTopicName(ctx context.Context, topicName string) ([]To
 
 	for rows.Next() {
 		var t Topic
-		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
+		if err := rows.Scan(&t.ID, &t.UserID, &t.Username, &t.TopicName, &t.TopicDescription, &t.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get topics by topic name: %w", err)
 		}
 		topics = append(topics, t)
