@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import Header from '../components/Header';
-import Button from '../components/Button';
+import Button, { CreateButton, DeleteButton, EditButton } from '../components/Button';
 import ListDisplay from '../components/ListDisplay';
 import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';
@@ -15,6 +15,7 @@ import NavBar from '../components/NavBar';
 export default function Topic() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return null;
@@ -73,10 +74,8 @@ export default function Topic() {
           <>
             <Header variant="sub" title="|" className="mx-4" />
             <div  className="flex gap-4">
-              <Link to={`/updateTopics/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
-                <Button variant="secondary" value="Update Topic"/>
-              </Link>
-              <Button variant="secondary" value="Delete Topic" onClick={() => setDeleteActive(!deleteActive)}/>
+              <EditButton onClick={() => navigate(`/updateTopics/${topicid}`, { state: { returnTo: `/topics/${topicid}` } })} />
+              <DeleteButton onClick={() => setDeleteActive(!deleteActive)}/>
             </div>
           </>
         )}
@@ -89,9 +88,7 @@ export default function Topic() {
         {user && (
         <>
           <Header variant="sub" title="|" className="mx-4" />
-          <Link to={`/addPosts/${topicid}`} state={{ returnTo: `/topics/${topicid}` }}>
-            <Button variant="secondary" value="Create Post"/>
-          </Link>
+          <CreateButton onClick={() => navigate(`/addPosts/${topicid}`, { state: { returnTo: `/topics/${topicid}` } })} />
         </>
         )}
       </div>
