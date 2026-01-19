@@ -8,15 +8,15 @@ type ButtonProps = {
 export default function IconButton({ variant, onClick}: ButtonProps) {
   if (variant === "reply") {
     return (
-      <MdReply onClick={onClick} />
+      <MdReply size={20} onClick={onClick} />
     );
   } else if (variant === "delete") {
     return (
-      <MdDeleteOutline onClick={onClick} />
+      <MdDeleteOutline size={20} onClick={onClick} />
     );
   } else if (variant === "cancel") {
     return (
-      <MdCancel onClick={onClick} />
+      <MdCancel size={20} onClick={onClick} />
     );
   }
 }

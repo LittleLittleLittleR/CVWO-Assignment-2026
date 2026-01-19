@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MdCreate, MdEdit, MdDelete, MdArrowBack } from 'react-icons/md';
+import { MdCreate, MdEdit, MdDelete, MdArrowBack, MdLogin } from 'react-icons/md';
 
 type ButtonProps = {
   variant: "primary" | "secondary" | "square" | "back" | "dropdown" | "alert" | "semiAlert";
@@ -26,7 +26,7 @@ export default function Button({ variant, value, onClick, className }: ButtonPro
   } else if (variant === "square") {
     return (
       <button 
-      className={`cursor-pointer py-2 px-4 border-b border-black hover:border-black flex flex-row items-center gap-2 ${className}`} 
+      className={`cursor-pointer py-2 px-4 border-b border-black hover:border-black ${className}`} 
       onClick={onClick}>
         {value}
       </button>
@@ -42,7 +42,7 @@ export default function Button({ variant, value, onClick, className }: ButtonPro
   } else if (variant === "back") {
     return (
       <button 
-      className={`cursor-pointer bg-white hover:bg-gray-300 hover:border-black py-2 px-4 rounded border flex flex-row items-center gap-2 ${className}`} 
+      className={`cursor-pointer hover:text-blue-500 flex flex-row items-center gap-2 ${className}`} 
       onClick={onClick}>
         {value}
       </button>
@@ -77,24 +77,30 @@ export function BackButton() {
   };
 
   return (
-    <Button variant="back" value={<><MdArrowBack />Back</>} onClick={handleBack}/>
+    <Button variant="back" value={<><MdArrowBack size={20}/>Back</>} onClick={handleBack}/>
   );
 }
 
 export function EditButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button variant="secondary" value={<>Edit<MdEdit /></>} onClick={onClick}/>
+    <Button variant="secondary" value={<>Edit<MdEdit size={16}/></>} onClick={onClick}/>
   );
 }
 
 export function DeleteButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button variant="semiAlert" value={<>Delete<MdDelete /></>} onClick={onClick}/>
+    <Button variant="semiAlert" value={<>Delete<MdDelete size={16}/></>} onClick={onClick}/>
   );
 }
 
 export function CreateButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button variant="primary" value={<>Create<MdCreate /></>} onClick={onClick}/>
+    <Button variant="primary" value={<>Create<MdCreate size={16}/></>} onClick={onClick}/>
+  );
+}
+
+export function LoginButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button variant="primary" value={<>Log In<MdLogin size={16}/></>} onClick={onClick}/>
   );
 }

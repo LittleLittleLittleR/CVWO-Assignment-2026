@@ -4,7 +4,6 @@ import { useAuth } from "../Auth";
 import IconButton from "./IconButton";
 import DeleteWarning from "./DeleteWarning";
 import InputField from "./InputField";
-import Header from "./Header";
 
 type CommentDisplayProps = {
   post_id: string | undefined;

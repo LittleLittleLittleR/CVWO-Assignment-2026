@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import Header, { MainHeader } from '../components/Header';
-import UserIcon from '../components/UserIcon';
-import { BackButton } from '../components/Button';
+import Header from '../components/Header';
 import InputField from '../components/InputField';
 import NavBar from '../components/NavBar';
 

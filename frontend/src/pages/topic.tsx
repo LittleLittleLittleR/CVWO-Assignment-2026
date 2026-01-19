@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Header from '../components/Header';
-import Button, { CreateButton, DeleteButton, EditButton } from '../components/Button';
+import { CreateButton, DeleteButton, EditButton } from '../components/Button';
 import ListDisplay from '../components/ListDisplay';
 import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';

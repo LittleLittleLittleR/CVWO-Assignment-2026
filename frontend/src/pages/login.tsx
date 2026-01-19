@@ -64,7 +64,7 @@ export default function Login() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar variant="other"/>
       <div className="w-1/3 mx-auto border rounded-lg mt-20 bg-white text-center pb-4">
         <div className="w-full">
           <Button 

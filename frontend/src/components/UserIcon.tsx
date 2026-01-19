@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { MdKeyboardArrowDown  , MdKeyboardArrowUp, MdAccountCircle, MdLogout } from "react-icons/md"; 
 
 import Button from "./Button";
 import { useAuth } from "../Auth";
@@ -28,11 +28,11 @@ export default function UserIcon() {
         border-t border-l border-r overflow-hidden flex flex-row items-center gap-2"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-        <ChevronUp size={16}/> {user?.username}
+        <MdKeyboardArrowUp size={20}/> {user?.username}
         </h2>
         <div className="absolute top-full left-0 w-full flex flex-col bg-white rounded-b border-b border-l border-r">
-          <Button variant="dropdown" value="Profile" onClick={handleProfile} />
-          <Button variant="dropdown" value="Log Out" onClick={handleLogout} />
+          <Button variant="dropdown" value={<>Profile<MdAccountCircle size={16} /></>} onClick={handleProfile} />
+          <Button variant="dropdown" value={<>Log Out<MdLogout size={16} /></>} onClick={handleLogout} />
         </div>
       </>
     ) : 
@@ -42,7 +42,7 @@ export default function UserIcon() {
       border overflow-hidden flex flex-row items-center gap-2"
       onClick={() => setDropdownOpen(!dropdownOpen)}
       >
-      <ChevronDown size={16}/> {user?.username}
+      <MdKeyboardArrowDown size={20}/> {user?.username}
       </h2>
     )
     }
