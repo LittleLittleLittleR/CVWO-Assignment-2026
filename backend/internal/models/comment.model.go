@@ -194,7 +194,7 @@ func (m *CommentModel) Delete(ctx context.Context, id string) error {
 
 	const query = `
 		DELETE FROM comments
-		WHERE id = $1
+		WHERE id = $1 OR parent_comment_id = $1
 		RETURNING id
 	`
 
