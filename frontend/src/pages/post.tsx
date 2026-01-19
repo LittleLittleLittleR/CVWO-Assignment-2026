@@ -10,6 +10,7 @@ import type { UserResponse } from '../../types/user';
 import type { PostResponse } from '../../types/post';
 import type { CommentResponse } from '../../types/comment';
 import NavBar from '../components/NavBar';
+import CommentDisplay from '../components/commentDisplay';
 
 export default function Post() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
@@ -60,6 +61,7 @@ export default function Post() {
     }
   };
 
+
   useEffect(() => {
     fetchTopicDetails();
   }, []);
@@ -84,26 +86,22 @@ export default function Post() {
       <p className="my-4 border-2 px-3 py-2 rounded-lg bg-white">
         {post?.body}
       </p>
-      <div className='flex flex-row'>
-        <Header variant="sub" title="Comments" />
-        {user && (
-          <>
-            <Header variant="sub" title="|" className="mx-4" />
-          <Button variant="secondary" value="Comment"/>
-          </>
-          )}
-      </div>
-      <div>
-        <ul>
-          {comments.map((comment) => (
-            <li key={comment.id}>
-                <h3>{comment.body}</h3>
-                <p>{comment.created_at}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {deleteActive && (<DeleteWarning item_type="post" item_id={post?.id} item_name={post?.title} closeDelete={() => setDeleteActive(false)} />)}
+      <Header variant="sub" title="Comments" />
+      <CommentDisplay
+        post_id={postid}
+        comment_list={comments}
+        onRefresh={fetchTopicDetails}
+      />
+      {deleteActive && (
+        <DeleteWarning 
+          item_type="post" 
+          item_id={post?.id} 
+          item_name={post?.title} 
+          closeDelete={async () => {
+            setDeleteActive(false);
+            fetchTopicDetails();
+          }} />
+      )}
     </div>
   );
 }

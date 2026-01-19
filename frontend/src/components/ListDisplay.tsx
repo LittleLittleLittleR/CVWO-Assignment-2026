@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../Auth";
 import type { TopicResponse } from "../../types/topic";
 import type { PostResponse } from "../../types/post";
+import type { CommentResponse } from "../../types/comment";
 
 type ListProps = {
-  item_list: Array<TopicResponse> | Array<PostResponse>;
+  item_list: Array<TopicResponse> | Array<PostResponse> | Array<CommentResponse>;
   item_type: 'topic' | 'post' | 'comment';
   curLocation?: string;
 };
@@ -36,7 +37,7 @@ export default function ListDisplay({ item_list, item_type, curLocation}: ListPr
         <ul className="list-none p-0">
           {topic_list.map((topic) => (
             <Link to={`/topics/${topic.id}`} state={{ returnTo: curLocation || `/home` }}>
-              <li className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
+              <li key={topic.id} className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{topic.topic_name}</h3>
                     <p>{formatDate(topic.created_at)}</p>
@@ -53,7 +54,7 @@ export default function ListDisplay({ item_list, item_type, curLocation}: ListPr
         <ul className="list-none p-0">
           {post_list.map((post) => (
             <Link to={`/posts/${post.id}`} state={{ returnTo: curLocation || `/topics/${post.topic_id}` }}>
-              <li className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
+              <li key={post.id} className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{post.title}</h3>
                     <p>{formatDate(post.created_at)}</p>
@@ -63,8 +64,5 @@ export default function ListDisplay({ item_list, item_type, curLocation}: ListPr
           ))}
         </ul>
     );
-  } else if (item_type === "comment") {
-    // Comments are not displayed in a list format currently
-    return null;
   }
 }
