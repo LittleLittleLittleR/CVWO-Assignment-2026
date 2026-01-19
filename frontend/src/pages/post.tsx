@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Header from '../components/Header';
-import Button from '../components/Button';
+import { DeleteButton, EditButton } from '../components/Button';
 import DeleteWarning from '../components/DeleteWarning';
 import { useAuth } from '../Auth';
 
@@ -15,6 +15,7 @@ import CommentDisplay from '../components/commentDisplay';
 export default function Post() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return null;
@@ -75,10 +76,12 @@ export default function Post() {
         <>
           <Header variant="sub" title="|" className="mx-4" />
           <div  className="flex gap-4">
-            <Link to={`/updatePosts/${postid}`} state={{ returnTo: `/posts/${postid}` }}>
-              <Button variant="secondary" value="Edit Post"/>
-            </Link>
-            <Button variant="secondary" value="Delete Post" onClick={() => setDeleteActive(!deleteActive)}/>
+            <EditButton onClick={() => {
+              navigate(`/updatePosts/${postid}`, 
+                { state: { returnTo: `/posts/${postid}` } })
+            }}/>
+            <DeleteButton onClick={() => setDeleteActive(!deleteActive)}/>
+              
           </div>
         </>
         )}

@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth";
 
-import Button, { BackButton } from "./Button";
+import { BackButton, LoginButton } from "./Button";
 import UserIcon from "./UserIcon";
 import { MainHeader } from "./Header";
 
@@ -11,6 +11,7 @@ interface NavBarProps {
 
 export default function NavBar({ variant }: NavBarProps) {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return null;
@@ -27,9 +28,7 @@ export default function NavBar({ variant }: NavBarProps) {
       <div className="justify-self-end">
         {user ? 
         <UserIcon/>: 
-        <Link to="/login" state={{ returnTo: `/home` }}>
-          <Button variant="primary" value="Log In" /> 
-        </Link>
+        <LoginButton onClick={() => navigate("/login", { state: { returnTo: `/home` } })} />
         }
       </div>
     </div>

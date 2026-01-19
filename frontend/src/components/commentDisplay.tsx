@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import type { CommentResponse } from "../../types/comment";
 import { useAuth } from "../Auth";
-import Button from "./Button";
+import IconButton from "./IconButton";
 import DeleteWarning from "./DeleteWarning";
 import InputField from "./InputField";
-import Header from "./Header";
 
 type CommentDisplayProps = {
   post_id: string | undefined;
@@ -106,16 +105,14 @@ export default function CommentDisplay({ post_id, comment_list, onRefresh }: Com
               <p>{formatDate(comment.created_at)}</p>
               <div className="w-full flex flex-row gap-4 items-center justify-end">
                 { user && (
-                  <Button
-                    variant="replyIcon"
-                    value="Reply"
+                  <IconButton
+                    variant="reply"
                     onClick={() => setReplyComment(replyComment === comment ? null : comment)}
                   />
                 )}
                 {comment.user_id === user?.id && (
-                  <Button 
-                    variant="deleteIcon" 
-                    value="Delete" 
+                  <IconButton 
+                    variant="delete" 
                     onClick={() => { 
                       setDeleteCommentId(comment.id); 
                       setDeleteActive(true); 
@@ -144,7 +141,7 @@ export default function CommentDisplay({ post_id, comment_list, onRefresh }: Com
             Replying to{" "}
             <span className="font-semibold text-blue-500">@{replyComment.username}</span>
           </p>
-          <Button variant="cancelIcon" value="Cancel" onClick={() => setReplyComment(null)} />
+          <IconButton variant="cancel" onClick={() => setReplyComment(null)} />
         </div>
         }
         <form className='w-full flex flex-row gap-2' onSubmit={replyComment ? handleReply : addComment}>

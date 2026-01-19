@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import type { JSX } from "react/jsx-dev-runtime";
 
 type HeaderProps = {
   variant: "main" | "sub";

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import type { TopicResponse } from '../../types/topic';
 
 import Header from '../components/Header';
-import Button from '../components/Button';
+import { CreateButton } from '../components/Button';
 import ListDisplay from '../components/ListDisplay';
 import { useAuth } from '../Auth';
 import NavBar from '../components/NavBar';
@@ -12,7 +11,8 @@ import NavBar from '../components/NavBar';
 export default function Home() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
   const { user, loading } = useAuth();
-
+  const navigate = useNavigate();
+  
   if (loading) {
     return null;
   }
@@ -49,9 +49,9 @@ export default function Home() {
           { user &&
           <>
             <Header variant="sub" title="|" className="mx-4" />
-            <Link to="/addTopics" state={{ returnTo: `/home` }}>
-              <Button variant="secondary" value="Create Topic"/>
-            </Link>
+            <CreateButton onClick={() => {
+              navigate(`/addTopics`, { state: { returnTo: `/home` } })
+            }} />
           </>
           }
         </div>
