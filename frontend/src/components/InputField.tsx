@@ -11,7 +11,7 @@ export default function InputField({ variant, value, onChange, placeholder }: In
     return (
       <input 
       type="text" 
-      className="w-full border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      className="w-full border border-gray-500 rounded bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
       value={value} 
       onChange={e => onChange && onChange(e.target.value)}
       placeholder={placeholder}
@@ -20,7 +20,7 @@ export default function InputField({ variant, value, onChange, placeholder }: In
   } else if (variant === "textarea") {
     return (
       <textarea 
-      className="w-full border border-gray-500 rounded px-3 py-2 h-40 resize-none overflow-auto focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      className="w-full border border-gray-500 rounded bg-white px-3 py-2 h-40 resize-none overflow-auto focus:outline-none focus:ring-2 focus:ring-blue-500" 
       value={value} 
       onChange={e => onChange && onChange(e.target.value)} 
       placeholder={placeholder}

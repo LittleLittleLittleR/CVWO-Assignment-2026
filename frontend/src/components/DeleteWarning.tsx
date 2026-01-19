@@ -20,10 +20,14 @@ export default function DeleteWarning({ item_id, item_name, item_type, closeDele
     try {
       await fetch(`${api_url}/${item_type}s/id/${item_id}`, { method: "DELETE" });
       
-      if (returnTo) {
-        navigate(returnTo, { replace: true });
+      if (item_type !== "comment") {
+        if (returnTo) {
+          navigate(returnTo, { replace: true });
+        } else {
+          navigate("/home", { replace: true });
+        }
       } else {
-        navigate("/home", { replace: true });
+        closeDelete();
       }
 
     } catch (error) {

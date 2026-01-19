@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../Auth";
 import type { TopicResponse } from "../../types/topic";
 import type { PostResponse } from "../../types/post";
+import type { CommentResponse } from "../../types/comment";
 
 type ListProps = {
-  item_list: Array<TopicResponse> | Array<PostResponse>;
+  item_list: Array<TopicResponse> | Array<PostResponse> | Array<CommentResponse>;
   item_type: 'topic' | 'post' | 'comment';
   curLocation?: string;
 };
@@ -63,8 +64,5 @@ export default function ListDisplay({ item_list, item_type, curLocation}: ListPr
           ))}
         </ul>
     );
-  } else if (item_type === "comment") {
-    // Comments are not displayed in a list format currently
-    return null;
   }
 }
