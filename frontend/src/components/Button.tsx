@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MdReply, MdDeleteOutline, MdCancel  } from "react-icons/md";
 
 type ButtonProps = {
-  variant: "primary" | "secondary" | "square" | "back" | "dropdown" | "alert";
+  variant: "primary" | "secondary" | "square" | "back" | "dropdown" | "alert" | "replyIcon" | "deleteIcon" | "cancelIcon";
   value: string;
   onClick?: () => void;
   className?: string;
@@ -54,6 +55,18 @@ export default function Button({ variant, value, onClick, className }: ButtonPro
       onClick={onClick}>
         {value}
       </button>
+    );
+  } else if (variant === "replyIcon") {
+    return (
+      <MdReply onClick={onClick} />
+    );
+  } else if (variant === "deleteIcon") {
+    return (
+      <MdDeleteOutline onClick={onClick} />
+    );
+  } else if (variant === "cancelIcon") {
+    return (
+      <MdCancel onClick={onClick} />
     );
   }
 }
