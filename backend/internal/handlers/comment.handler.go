@@ -18,6 +18,7 @@ func toCommentResponse(t []models.Comment) []types.CommentResponse {
 		responseComments[i] = types.CommentResponse{
 			ID: comment.ID,
 			UserID: comment.UserID,
+			Username: comment.Username,
 			PostID: comment.PostID,
 			ParentCommentID: comment.ParentCommentID,
 			Body: comment.Body,

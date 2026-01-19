@@ -19,6 +19,7 @@ func toTopicResponse(t []models.Topic) []types.TopicResponse {
 		responseTopics[i] = types.TopicResponse{
 			ID: topic.ID,
 			UserID: topic.UserID,
+			Username: topic.Username,
 			TopicName: topic.TopicName,
 			TopicDescription: topic.TopicDescription,
 			CreatedAt: topic.CreatedAt,

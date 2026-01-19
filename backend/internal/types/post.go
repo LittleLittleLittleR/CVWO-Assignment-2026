@@ -18,6 +18,7 @@ type UpdatePostRequest struct {
 type PostResponse struct {
 	ID string `json:"id"`
 	UserID string `json:"user_id"`
+	Username string `json:"username"`
 	TopicID string `json:"topic_id"`
 	Title string `json:"title"`
 	Body string `json:"body"`

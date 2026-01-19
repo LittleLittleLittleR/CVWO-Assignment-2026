@@ -12,6 +12,7 @@ import (
 type Post struct {
 	ID string
 	UserID string
+	Username string
 	TopicID string
 	Title string
 	Body string
@@ -24,8 +25,9 @@ type PostModel struct {
 
 func (m *PostModel) GetAll(ctx context.Context) ([]Post, error) {
 	const query = `
-		SELECT id, user_id, topic_id, title, body, created_at 
-		FROM posts
+		SELECT posts.id, posts.user_id, users.username, 
+		posts.topic_id, posts.title, posts.body, posts.created_at 
+		FROM posts JOIN users ON posts.user_id = users.id
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
@@ -38,7 +40,7 @@ func (m *PostModel) GetAll(ctx context.Context) ([]Post, error) {
 
 	for rows.Next() {
 		var t Post
-		if err := rows.Scan(&t.ID, &t.UserID, &t.TopicID, &t.Title, &t.Body, &t.CreatedAt); err != nil {
+		if err := rows.Scan(&t.ID, &t.UserID, &t.Username, &t.TopicID, &t.Title, &t.Body, &t.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get all posts: %w", err)
 		}
 		posts = append(posts, t)
@@ -54,14 +56,15 @@ func (m *PostModel) GetByID(ctx context.Context, id string) ([]Post, error) {
 	}
 
 	const query = `
-		SELECT id, user_id, topic_id, title, body, created_at 
-		FROM posts 
-		WHERE id = $1
+		SELECT posts.id, posts.user_id, users.username, 
+		posts.topic_id, posts.title, posts.body, posts.created_at 
+		FROM posts JOIN users ON posts.user_id = users.id
+		WHERE posts.id = $1
 	`
 
 	var p Post
 	err = m.DB.QueryRowContext(ctx, query, id).
-		Scan(&p.ID, &p.UserID, &p.TopicID, &p.Title, &p.Body, &p.CreatedAt)
+		Scan(&p.ID, &p.UserID, &p.Username, &p.TopicID, &p.Title, &p.Body, &p.CreatedAt)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -80,9 +83,10 @@ func (m *PostModel) GetByUserID(ctx context.Context, userID string) ([]Post, err
 	}
 
 	const query = `
-		SELECT id, user_id, topic_id, title, body, created_at 
-		FROM posts 
-		WHERE user_id = $1
+		SELECT posts.id, posts.user_id, users.username, 
+		posts.topic_id, posts.title, posts.body, posts.created_at 
+		FROM posts JOIN users ON posts.user_id = users.id
+		WHERE posts.user_id = $1
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
@@ -98,7 +102,7 @@ func (m *PostModel) GetByUserID(ctx context.Context, userID string) ([]Post, err
 
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.ID, &p.UserID, &p.TopicID, &p.Title, &p.Body, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.UserID, &p.Username, &p.TopicID, &p.Title, &p.Body, &p.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get post by user id: %w", err)
 		}
 		posts = append(posts, p)
@@ -114,9 +118,10 @@ func (m *PostModel) GetByTopicID(ctx context.Context, topicID string) ([]Post, e
 	}
 
 	const query = `
-		SELECT id, user_id, topic_id, title, body, created_at 
-		FROM posts 
-		WHERE topic_id = $1
+		SELECT posts.id, posts.user_id, users.username, 
+		posts.topic_id, posts.title, posts.body, posts.created_at 
+		FROM posts JOIN users ON posts.user_id = users.id
+		WHERE posts.topic_id = $1
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query, topicID)
@@ -132,7 +137,7 @@ func (m *PostModel) GetByTopicID(ctx context.Context, topicID string) ([]Post, e
 
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.ID, &p.UserID, &p.TopicID, &p.Title, &p.Body, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.UserID, &p.Username, &p.TopicID, &p.Title, &p.Body, &p.CreatedAt); err != nil {
 			return nil, fmt.Errorf("get post by topic id: %w", err)
 		}
 		posts = append(posts, p)
