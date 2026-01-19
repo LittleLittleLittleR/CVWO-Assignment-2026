@@ -2,9 +2,12 @@
 
 ## Getting started
 ### .env File
-Due to safety reasons, I have included the .env contents into my CVWO write-up.
-Please add the .env file into the backend folder.
-
+- Due to safety reasons, I have included the .env contents into my CVWO write-up.
+- Please add the .env file into the backend folder.
+### Docker
+Make sure to have Docker Engine or Docker Desktop installed and running, I am personally using Docker Desktop
+- Docker Desktop windows install: `https://docs.docker.com/desktop/setup/install/windows-install/`
+- Docker Desktop mac install: `https://docs.docker.com/desktop/setup/install/mac-install/`
 ### Backend
 ```bash
 cd backend
@@ -18,8 +21,8 @@ npm i
 npm run dev
 ```
 ### URLs
-Frontend home page: `http://localhost:3000` (redirects to `http://localhost:3000/home`)
-Backend API URL: `http://localhost:8080`
+- Frontend home page: `http://localhost:3000` (redirects to `http://localhost:3000/home`)
+- Backend API URL: `http://localhost:8080`
 
 ## File Structure
 ```text
