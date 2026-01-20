@@ -8,16 +8,10 @@ import type { UserResponse } from '../../types/user';
 import NavBar from '../components/NavBar';
 import Header from '../components/Header';
 import Button from '../components/Button';
-import { useAuth } from '../Auth';
 import ListDisplay from '../components/ListDisplay';
 
 export default function User() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return null;
-  }
 
   const { username } = useParams<{ username: string }>();
 

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import Header from '../components/Header';
-import { DeleteButton, EditButton } from '../components/Button';
-import DeleteWarning from '../components/DeleteWarning';
-import { useAuth } from '../Auth';
+import Header from '../../components/Header';
+import { DeleteButton, EditButton } from '../../components/Button';
+import DeleteWarning from '../../components/DeleteWarning';
+import { useAuth } from '../../Auth';
 
-import type { UserResponse } from '../../types/user';
-import type { PostResponse } from '../../types/post';
-import type { CommentResponse } from '../../types/comment';
-import NavBar from '../components/NavBar';
-import CommentDisplay from '../components/commentDisplay';
+import type { UserResponse } from '../../../types/user';
+import type { PostResponse } from '../../../types/post';
+import type { CommentResponse } from '../../../types/comment';
+import NavBar from '../../components/NavBar';
+import CommentDisplay from '../../components/commentDisplay';
 
 export default function Post() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';

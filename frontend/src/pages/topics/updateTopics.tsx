@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import Header from '../components/Header';
-import InputField from '../components/InputField';
-import NavBar from '../components/NavBar';
+import Header from '../../components/Header';
+import InputField from '../../components/InputField';
+import NavBar from '../../components/NavBar';
 
 export default function UpdateTopics() {
   const navigate = useNavigate();

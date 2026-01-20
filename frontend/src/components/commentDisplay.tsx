@@ -131,7 +131,7 @@ export default function CommentDisplay({ post_id, comment_list, onRefresh }: Com
 
   return (
     <>
-      <div className="mt-2 px-3 bg-white">{renderComments()}</div>
+      <div className="mt-2 px-3 bg-white mb-20">{renderComments()}</div>
       
       {user &&
       <div className="w-full fixed left-0 bottom-0 z-10 bg-gray-300 px-3 py-2">
