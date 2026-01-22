@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import { CreateButton, DeleteButton, EditButton } from '../../components/Button';
@@ -67,9 +67,16 @@ export default function Topic() {
 
   return (
     <div className="flex flex-col">
-      <NavBar variant="other"/>
+      <NavBar/>
       <div className='flex flex-row '>
-        <Header variant="sub" title={`${topicUser?.username}/${topic?.topic_name}`} />
+        <Header variant="sub" title={
+        <>
+          <Link to={`/users/${topicUser?.username}`} state={{ returnTo: window.location.pathname || `/home` }} className="hover:text-blue-500">
+            {topicUser?.username}
+          </Link>
+          /{topic?.topic_name}
+        </>
+        } />
         {topic?.user_id === user?.id && (
           <>
             <Header variant="sub" title="|" className="mx-4" />

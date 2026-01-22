@@ -60,7 +60,7 @@ export default function UpdateTopics() {
 
   return (
     <div>
-      <NavBar variant="other" />
+      <NavBar/>
       <Header variant="sub" title="Update Topic" />
       <form className='flex flex-col gap-2' onSubmit={updateTopic}>
         <div>

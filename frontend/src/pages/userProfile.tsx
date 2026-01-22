@@ -61,7 +61,7 @@ export default function User() {
 
   return (
     <div className="flex flex-col">
-      <NavBar variant="other"/>
+      <NavBar/>
       <div className='flex flex-row '>
         <Header variant="sub" title={profileUser?.username} />
         <Header variant="sub" title="|" className="mx-4" />

@@ -16,7 +16,7 @@ export default function Header({ variant, title, className }: HeaderProps) {
 
 export function MainHeader() {
   return (
-    <Link to="/home" className="group">
+    <Link to="/home"  state={{ returnTo: window.location.pathname || `/home` }}>
       <div className="flex flex-row">
         <Header
           variant="main"

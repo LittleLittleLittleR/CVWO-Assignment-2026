@@ -52,7 +52,7 @@ export default function AddPosts() {
 
   return (
     <div>
-      <NavBar variant="other" />
+      <NavBar/>
       <Header variant="sub" title="Create New Post" />
       <form className='flex flex-col gap-2' onSubmit={createPost}>
         <div>

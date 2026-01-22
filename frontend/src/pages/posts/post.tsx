@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import { DeleteButton, EditButton } from '../../components/Button';
@@ -69,9 +69,16 @@ export default function Post() {
 
   return (
     <div className="flex flex-col">
-      <NavBar variant="other"/>
+      <NavBar/>
       <div className='flex flex-row '>
-        <Header variant="sub" title={`${postUser?.username}/${post?.title}`} />
+        <Header variant="sub" title={
+          <>
+          <Link to={`/users/${postUser?.username}`} state={{ returnTo: window.location.pathname || `/home` }} className="hover:text-blue-500">
+            {postUser?.username}
+          </Link>
+          /{post?.title}
+        </>
+        } />
         {post?.user_id === user?.id && (
         <>
           <Header variant="sub" title="|" className="mx-4" />

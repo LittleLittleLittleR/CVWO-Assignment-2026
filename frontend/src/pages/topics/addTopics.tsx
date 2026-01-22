@@ -48,7 +48,7 @@ export default function AddTopics() {
 
   return (
     <div>
-      <NavBar variant="other" />
+      <NavBar/>
       <Header variant="sub" title="Create New Topic" />
       <form className='flex flex-col gap-2' onSubmit={createTopic}>
         <div>
