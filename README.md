@@ -3,7 +3,7 @@
 ## Getting started
 ### .env File
 - Due to safety reasons, I have included the .env contents into my CVWO write-up.
-- Please add the .env file into the backend folder.
+- Please add the backend and frontend .env file into the backend and frontend folders respectively.
 ### Docker
 Make sure to have Docker Engine or Docker Desktop installed and running, I am personally using Docker Desktop
 - Docker Desktop windows install: `https://docs.docker.com/desktop/setup/install/windows-install/`
