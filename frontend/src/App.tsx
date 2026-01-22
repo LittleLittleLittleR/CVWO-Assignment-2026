@@ -2,12 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import User from "./pages/userProfile";
-import Topic from "./pages/topic";
-import AddTopics from "./pages/addTopics";
-import UpdateTopics from "./pages/updateTopics";
-import Post from "./pages/post";
-import AddPosts from "./pages/addPosts";
-import UpdatePost from "./pages/updatePosts";
+import Topic from "./pages/topics/topic";
+import AddTopics from "./pages/topics/addTopics";
+import UpdateTopics from "./pages/topics/updateTopics";
+import Post from "./pages/posts/post";
+import AddPosts from "./pages/posts/addPosts";
+import UpdatePost from "./pages/posts/updatePosts";
 import { useAuth } from "./Auth";
 
 function App() {

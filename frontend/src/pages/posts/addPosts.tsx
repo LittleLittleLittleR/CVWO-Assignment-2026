@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import Header from '../components/Header';
-import { useAuth } from '../Auth';
-import InputField from '../components/InputField';
-import NavBar from '../components/NavBar';
+import Header from '../../components/Header';
+import { useAuth } from '../../Auth';
+import InputField from '../../components/InputField';
+import NavBar from '../../components/NavBar';
 
 export default function AddPosts() {
   const navigate = useNavigate();

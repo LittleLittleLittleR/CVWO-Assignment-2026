@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import Header from '../components/Header';
-import { CreateButton, DeleteButton, EditButton } from '../components/Button';
-import ListDisplay from '../components/ListDisplay';
-import DeleteWarning from '../components/DeleteWarning';
-import { useAuth } from '../Auth';
+import Header from '../../components/Header';
+import { CreateButton, DeleteButton, EditButton } from '../../components/Button';
+import ListDisplay from '../../components/ListDisplay';
+import DeleteWarning from '../../components/DeleteWarning';
+import { useAuth } from '../../Auth';
 
-import type { UserResponse } from '../../types/user';
-import type { TopicResponse } from '../../types/topic';
-import type { PostResponse } from '../../types/post';
-import NavBar from '../components/NavBar';
+import type { UserResponse } from '../../../types/user';
+import type { TopicResponse } from '../../../types/topic';
+import type { PostResponse } from '../../../types/post';
+import NavBar from '../../components/NavBar';
 
 export default function Topic() {
   const api_url = import.meta.env.API_URL || 'http://localhost:8080';
