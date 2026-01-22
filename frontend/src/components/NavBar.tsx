@@ -5,11 +5,8 @@ import { BackButton, LoginButton } from "./Button";
 import UserIcon from "./UserIcon";
 import { MainHeader } from "./Header";
 
-interface NavBarProps {
-  variant: "home" | "other";
-}
 
-export default function NavBar({ variant }: NavBarProps) {
+export default function NavBar() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -20,7 +17,7 @@ export default function NavBar({ variant }: NavBarProps) {
   return (
     <div className="grid grid-cols-3 items-center pt-4 pb-6">
       <div className="justify-self-start">
-        {variant !== "home" && <BackButton />}
+        <BackButton />
       </div>
       <div className="justify-self-center">
         <MainHeader />

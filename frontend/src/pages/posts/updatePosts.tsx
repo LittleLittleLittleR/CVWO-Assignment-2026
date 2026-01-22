@@ -60,7 +60,7 @@ export default function UpdatePost() {
 
   return (
     <div>
-      <NavBar variant="other" />
+      <NavBar/>
       <Header variant="sub" title="Update Post" />
       <form className='flex flex-col gap-2' onSubmit={updatePost}>
         <div>

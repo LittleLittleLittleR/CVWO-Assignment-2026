@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import type { CommentResponse } from "../../types/comment";
 import { useAuth } from "../Auth";
 import IconButton from "./IconButton";
@@ -98,7 +99,9 @@ export default function CommentDisplay({ post_id, comment_list, onRefresh }: Com
         <div key={comment.id} className="py-2 ">
           <div className="flex flex-row justify-between items-center">
             <div className="flex flex-col">
-              <p className="text-blue-500 font-semibold">@{comment.username}</p>
+              <Link to={`/users/${comment.username}`} state={{ returnTo: window.location.pathname || `/home` }}> 
+                <p className="text-blue-500 font-semibold">@{comment.username}</p>
+              </Link>
               <p className="font-semibold">{comment.body}</p>
             </div>
             <div className="flex flex-col items-center">

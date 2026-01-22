@@ -36,7 +36,7 @@ export default function ListDisplay({ item_list, item_type, curLocation}: ListPr
     return (
         <ul className="list-none p-0">
           {topic_list.map((topic) => (
-            <Link to={`/topics/${topic.id}`} state={{ returnTo: curLocation || `/home` }}>
+            <Link to={`/topics/${topic.id}`} state={{ returnTo: window.location.pathname || `/home` }}>
               <li key={topic.id} className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === topic.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{`${topic.username}/${topic.topic_name}`}</h3>
@@ -53,7 +53,7 @@ export default function ListDisplay({ item_list, item_type, curLocation}: ListPr
     return (
         <ul className="list-none p-0">
           {post_list.map((post) => (
-            <Link to={`/posts/${post.id}`} state={{ returnTo: curLocation || `/topics/${post.topic_id}` }}>
+            <Link to={`/posts/${post.id}`} state={{  returnTo: window.location.pathname || `/topics/${post.topic_id}` }}>
               <li key={post.id} className={`border mt-2 px-3 py-2 rounded-lg ${user?.id === post.user_id ? `bg-blue-100` : `bg-white`}`}>
                   <div className="flex flex-row justify-between">
                     <h3 className="font-semibold text-lg">{`${post.username}/${post.title}`}</h3>
